@@ -46,20 +46,6 @@ namespace SavingsDeposits
                 })
                 .AddJwtBearer(x =>
                 {
-//                    x.Events = new JwtBearerEvents
-//                    {
-//                        OnTokenValidated = context =>
-//                        {
-//                            var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-//                            var userId = int.Parse(context.Principal.Identity.Name);
-//                            var user = userService.GetById(userId);
-//                            if (user == null)
-//                            {
-//                                context.Fail("Unauthorized");
-//                            }
-//                            return Task.CompletedTask;
-//                        }
-//                    };
                     x.RequireHttpsMetadata = false;
                     x.SaveToken = true;
                     x.TokenValidationParameters = new TokenValidationParameters
@@ -95,9 +81,11 @@ namespace SavingsDeposits
             _appSettings = appSettingsSection.Get<AppSettings>();
          
             ConfigureJwt(services);
+          
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISavingsDepositService, SavingsDepositService>();
             
         }
 
@@ -112,6 +100,8 @@ namespace SavingsDeposits
             {
                 app.UseHsts();
             }
+
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
