@@ -1,11 +1,18 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Claims;
+using System.Security.Policy;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SavingsDeposits.Entities;
 using SavingsDeposits.Data;
+using SavingsDeposits.DTOs;
+using SavingsDeposits.Services;
 
 namespace SavingsDeposits.Controllers
 {
@@ -15,84 +22,82 @@ namespace SavingsDeposits.Controllers
     [Route("api/Savings")]
     public class SavingDepositController : Controller
     {
-        private readonly AppDataContext _context;
+        private readonly ISavingsDepositService _savingsService;
+        private readonly IMapper _mapper;
 
-        public SavingDepositController(AppDataContext context)
+        public SavingDepositController(ISavingsDepositService service, IMapper mapper)
         {
-            _context = context;
+            _savingsService = service;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [Authorize(Roles="Admin")]
-        public IEnumerable<SavingsDeposit> GetSavingDeposit()
+        public IEnumerable<SavingsDepositDTO> GetSavingDeposit()
         {
-            return _context.SavingDeposit;
+            return Enumerable.Empty<SavingsDepositDTO>(); //_context.SavingDeposit;
         }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetSavingDeposit([FromRoute] int id)
+        
+        [HttpGet("all")]
+        public async Task<IActionResult> GetSavingDepositByUser()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            
+            string userId = GetUserId(HttpContext.User);
 
-            var savingDeposit = await _context.SavingDeposit.SingleOrDefaultAsync(m => m.Id == id);
+            var result = await _savingsService.GetSavingsDepositsByOwnerId(userId);
+                        
+            var savingsEntity = _mapper.Map<IEnumerable<SavingsDepositDTO>>(result);
 
-            if (savingDeposit == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(savingDeposit);
+            return Ok(savingsEntity);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSavingDeposit([FromRoute] int id, [FromBody] SavingsDeposit savingsDeposit)
+        public async Task<IActionResult> PutSavingDeposit([FromRoute] int id, [FromBody] SavingsDepositDTO savingsDepositDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != savingsDeposit.Id)
+            if (id != savingsDepositDTO.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(savingsDeposit).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SavingDepoistExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            SavingsDeposit result = _mapper.Map<SavingsDeposit>(savingsDepositDTO);
+            string requestUserId = GetUserId(HttpContext.User);
+            await _savingsService.UpdateSavingsDeposit(requestUserId, result);
+           
+            
             return NoContent();
         }
 
+        private string GetUserId(ClaimsPrincipal principal)
+        {
+            //we can substitute this with different approach later if needed
+            return principal.Identity.Name;
+        }
+        
         [HttpPost]
-        public async Task<IActionResult> PostSavingDeposit([FromBody] SavingsDeposit savingsDeposit)
+        public async Task<IActionResult> PostSavingDeposit([FromBody] SavingsDepositDTO savingsDeposit)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.SavingDeposit.Add(savingsDeposit);
-            await _context.SaveChangesAsync();
+            string userId = GetUserId(HttpContext.User);
+            
+            var savingsEntity = _mapper.Map<SavingsDeposit>(savingsDeposit);
+            
+            savingsEntity.Owner = userId;
+            await _savingsService.CreateNewSavingsDepositAsync(savingsEntity);
 
-            return CreatedAtAction("GetSavingDeposit", new { id = savingsDeposit.Id }, savingsDeposit);
+            return Ok(new {savingsEntity.Id});
         }
 
         [HttpDelete("{id}")]
@@ -103,22 +108,12 @@ namespace SavingsDeposits.Controllers
                 return BadRequest(ModelState);
             }
 
-            var savingDeposit = await _context.SavingDeposit.SingleOrDefaultAsync(m => m.Id == id);
-            if (savingDeposit == null)
-            {
-                return NotFound();
-            }
+            string userId = GetUserId(HttpContext.User);
+            await _savingsService.DeleteSavingsDeposit(userId, id);
 
-            _context.SavingDeposit.Remove(savingDeposit);
-            await _context.SaveChangesAsync();
-
-            return Ok(savingDeposit);
+            return Ok();
         }
-
-        private bool SavingDepoistExists(int id)
-        {
-            return _context.SavingDeposit.Any(e => e.Id == id);
-        }
+     
     }
     
 }

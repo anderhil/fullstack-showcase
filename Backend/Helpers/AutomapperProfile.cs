@@ -10,6 +10,10 @@ namespace SavingsDeposits.Helpers
         {
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
+            
+            
+            CreateMap<SavingsDepositDTO, SavingsDeposit>();
+            CreateMap<SavingsDeposit, SavingsDepositDTO>();
         }
     }
 }

@@ -48,7 +48,6 @@ namespace SavingsDeposits.Services
                     return foundUser;    
                 }
             }
-            //_roleManager.
             throw new AppException("Cannot login");
         }
 

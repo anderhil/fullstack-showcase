@@ -9,4 +9,18 @@ namespace SavingsDeposits.Helpers
             
         }
     }
+
+    public class NotFoundException : AppException
+    {
+        public NotFoundException(string message) : base(message)
+        {
+        }
+    }  
+    
+    public class NotAuthorizedException : AppException
+    {
+        public NotAuthorizedException(string message) : base(message)
+        {
+        }
+    }
 }

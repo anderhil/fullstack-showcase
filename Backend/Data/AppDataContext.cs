@@ -22,7 +22,9 @@ namespace SavingsDeposits.Data
             foreach (var appUserRole in Enum.GetNames(typeof(AppUserRole)))
             {
                 builder.Entity<IdentityRole>().HasData(new IdentityRole(appUserRole){NormalizedName = appUserRole.ToUpperInvariant()});                
-            }            
+            }
+
+             builder.Entity<SavingsDeposit>().HasOne<User>().WithMany().HasForeignKey(s => s.Owner);
         }
     }
 }

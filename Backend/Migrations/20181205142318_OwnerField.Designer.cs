@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SavingsDeposits.Data;
 
 namespace SavingsDeposits.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    partial class AppDataContextModelSnapshot : ModelSnapshot
+    [Migration("20181205142318_OwnerField")]
+    partial class OwnerField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,9 +45,9 @@ namespace SavingsDeposits.Migrations
                     b.ToTable("AspNetRoles");
 
                     b.HasData(
-                        new { Id = "8f5dd0a6-b15b-4248-b074-1b6d17ee293d", ConcurrencyStamp = "95ed56f9-7a4f-4ed4-ad61-0674b65b228b", Name = "Admin", NormalizedName = "ADMIN" },
-                        new { Id = "f6f86a8e-a3da-48d8-b2af-7cd6fdd63f15", ConcurrencyStamp = "f18e225e-bf70-4fec-b70c-f0aadd1995c2", Name = "Manager", NormalizedName = "MANAGER" },
-                        new { Id = "88776c50-83f4-4d7f-8cea-ef97b859438c", ConcurrencyStamp = "3fd57446-2162-4323-90ce-d335a8a6aa0e", Name = "User", NormalizedName = "USER" }
+                        new { Id = "72e0327b-3c76-4d71-94cf-17f4aa0e71a8", ConcurrencyStamp = "a08750ff-36d2-4d74-92c3-40ac4e44d3ca", Name = "Admin", NormalizedName = "ADMIN" },
+                        new { Id = "66544c0b-3641-4d29-b7d6-28be80a8cb8f", ConcurrencyStamp = "3e5ebb5f-72cd-44e4-b20e-2a6b35aebeb8", Name = "Manager", NormalizedName = "MANAGER" },
+                        new { Id = "1b24d3f8-dc56-4414-89d8-debaf6997c66", ConcurrencyStamp = "768c0899-aa9d-4c02-b854-288f728cfbe8", Name = "User", NormalizedName = "USER" }
                     );
                 });
 
@@ -159,8 +161,6 @@ namespace SavingsDeposits.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Owner");
-
                     b.ToTable("SavingDeposit");
                 });
 
@@ -258,13 +258,6 @@ namespace SavingsDeposits.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SavingsDeposits.Entities.SavingsDeposit", b =>
-                {
-                    b.HasOne("SavingsDeposits.Entities.User")
-                        .WithMany()
-                        .HasForeignKey("Owner");
                 });
 #pragma warning restore 612, 618
         }
