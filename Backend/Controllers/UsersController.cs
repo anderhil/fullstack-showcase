@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -17,19 +19,21 @@ namespace SavingsDeposits.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
+        private readonly UserManager<User> _userManager;
         private IMapper _mapper;
         private readonly AppSettings _appSettings;
 
         public UsersController(
             IMapper mapper,
             IOptions<AppSettings> appSettings,
-            IUserService userService)
+            IUserService userService, UserManager<User> userManager)
         {
             _userService = userService;
+            _userManager = userManager;
             _mapper = mapper;
             _appSettings = appSettings.Value;
         }
@@ -38,20 +42,22 @@ namespace SavingsDeposits.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]UserDto userDto)
         {
-            var user = _userService.Authenticate(userDto.Username, userDto.Password);
+            User user = _userService.Authenticate(userDto.Username, userDto.Password).Result;
 
             if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            
+            string mainRole = _userManager.GetRolesAsync(user).Result.First();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
                 Subject = new ClaimsIdentity(new Claim[] 
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    new Claim(ClaimTypes.Name, user.Id),
+                    new Claim(ClaimTypes.Role, mainRole)
                 }),
                 Expires = DateTime.UtcNow.AddSeconds(_appSettings.TokenExpiry)
             };
@@ -59,13 +65,7 @@ namespace SavingsDeposits.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-            return Ok(new UserDto {
-                Id = user.Id,
-                Username = user.Username,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Token = tokenString
-            });
+            return Ok(new{tokenString});
         }
 
         [AllowAnonymous]
@@ -73,15 +73,15 @@ namespace SavingsDeposits.Controllers
         public IActionResult Register([FromBody]UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
-
-            try 
+            var info = _userService.Create(user, userDto.Password, Enum.Parse<AppUserRole>(userDto.Role)).Result;
+          
+            if(info.Succeeded)
             {
-                _userService.Create(user, userDto.Password);
                 return Ok();
             } 
-            catch(Exception ex)
+            else
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { message = info.Errors.First().Description });
             }
         }
 
@@ -102,7 +102,7 @@ namespace SavingsDeposits.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody]UserDto userDto)
+        public IActionResult Update(string id, [FromBody]UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
             user.Id = id;

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SavingsDeposits.Entities;
@@ -8,6 +9,8 @@ using SavingsDeposits.Data;
 
 namespace SavingsDeposits.Controllers
 {
+    [Authorize]
+    [ApiController]
     [Produces("application/json")]
     [Route("api/Savings")]
     public class SavingDepositController : Controller
@@ -20,6 +23,7 @@ namespace SavingsDeposits.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles="Admin")]
         public IEnumerable<SavingsDeposit> GetSavingDeposit()
         {
             return _context.SavingDeposit;

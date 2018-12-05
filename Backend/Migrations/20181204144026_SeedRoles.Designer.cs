@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SavingsDeposits.Data;
 
 namespace SavingsDeposits.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    partial class AppDataContextModelSnapshot : ModelSnapshot
+    [Migration("20181204144026_SeedRoles")]
+    partial class SeedRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,9 +45,9 @@ namespace SavingsDeposits.Migrations
                     b.ToTable("AspNetRoles");
 
                     b.HasData(
-                        new { Id = "8c5e61ed-010b-401e-b361-7ddeef5a6c89", ConcurrencyStamp = "0ff3a047-bce6-4b4d-a2a9-0ea688e1f201", Name = "Admin", NormalizedName = "ADMIN" },
-                        new { Id = "b1c8b800-8690-4eda-ae5e-237ec1e431be", ConcurrencyStamp = "a70b291c-8115-469d-a90a-ae4f9bb08063", Name = "Manager", NormalizedName = "MANAGER" },
-                        new { Id = "c0ad6c96-92d0-403b-b52a-3c348b1e9e75", ConcurrencyStamp = "0b46f3ca-cb9b-4319-b482-d4e2dd8a236c", Name = "User", NormalizedName = "USER" }
+                        new { Id = "c44607a2-a6f5-4e1c-a28a-6eebef7b420f", ConcurrencyStamp = "bda4e13b-f6f2-4a5f-8506-122e02e3d6d8", Name = "admin" },
+                        new { Id = "64950272-ac34-4a54-a3c6-0e2abeba2e9a", ConcurrencyStamp = "f81090d4-0e9b-4d71-b2d1-eeaf455ba1cc", Name = "user" },
+                        new { Id = "736187db-1e27-4d29-81e4-da7c0c6a10e4", ConcurrencyStamp = "5d6ebacc-d658-4876-b5f6-cfe757c7b3d8", Name = "usermanager" }
                     );
                 });
 
