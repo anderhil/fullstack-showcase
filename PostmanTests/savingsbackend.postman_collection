@@ -1,0 +1,444 @@
+{
+	"info": {
+		"_postman_id": "323cca3b-46c1-4839-a437-46490e01de94",
+		"name": "savingsbackend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RegisterUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4ba25c2-08aa-483c-90b1-00cbd2af6095",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"petrol@gmail.com\",\n\t\"username\":\"petro10\",\n\t\"password\":\"samp2leP@S$\",\n\t\"role\":\"Admin\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/Users/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AuthWithUserRole",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8ed1fd25-0d2d-4dcb-9a3d-5b5b470ecd9d",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"globalUserToken\", jsonData.tokenString);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"petrol@gmail.com\",\n\t\"username\":\"petro\",\n\t\"password\":\"samp2leP@S$\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/Users/authenticate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Users",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AuthWithUserAdmin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1228a52a-d091-4e17-9bcd-ba2707a982bf",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"globalAdminToken\", jsonData.tokenString);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"petrol@gmail.com\",\n\t\"username\":\"petro10\",\n\t\"password\":\"samp2leP@S$\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/Users/authenticate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Users",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AuthWithUserManager",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1228a52a-d091-4e17-9bcd-ba2707a982bf",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"globalAdminToken\", jsonData.tokenString);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"petrol@gmail.com\",\n\t\"username\":\"petro10\",\n\t\"password\":\"samp2leP@S$\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/Users/authenticate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Users",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SavingsGetAll",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{globalUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/Savings/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Savings",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SavingsGetAllByUser",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{globalUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"BankName\":\"KredoBank\",\n\t\"AccountNumber\":1235678,\n\t\"InitialAmount\":100,\n\t\"StartDate\":\"2012-03-19T07:22Z\",\n\t\"EndDate\":\"2012-03-19T07:22Z\",\n\t\"YearlyInterestPercentage\":20,\n\t\"TaxPercentage\":12\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/Savings/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Savings",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SavingsGetFirst",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{globalAdminToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/Savings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Savings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateSavingsDeposit",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{globalUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"BankName\":\"KredoBank\",\n\t\"AccountNumber\":12355678,\n\t\"InitialAmount\":100,\n\t\"StartDate\":\"2012-03-19T07:22Z\",\n\t\"EndDate\":\"2012-03-19T07:22Z\",\n\t\"YearlyInterestPercentage\":20,\n\t\"TaxPercentage\":12\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/Savings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Savings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateSavingsDeposit",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{globalUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"id\": 1002,\n        \"bankName\": \"KredoBanka\",\n        \"accountNumber\": 1235678,\n        \"initialAmount\": 100,\n        \"startDate\": \"2012-03-19T07:22:00\",\n        \"endDate\": \"2012-03-19T07:22:00\",\n        \"yearlyInterestPercentage\": 20,\n        \"taxPercentage\": 12\n}\n"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/Savings/1002",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Savings",
+						"1002"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateSavingsDepositWithError",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{globalUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 1,\n\t\"BankName\":\"KredoBank\",\n\t\"AccountNumber\":1235678,\n\t\"InitialAmount\":100,\n\t\"StartDate\":\"2012-03-19T07:22Z\",\n\t\"EndDate\":\"2012-03-19T07:22Z\",\n\t\"YearlyInterestPercentage\":20,\n\t\"TaxPercentage\":12\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/Savings/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Savings",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
