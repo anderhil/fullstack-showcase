@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -20,6 +21,7 @@ using SavingsDeposits.Data;
 using SavingsDeposits.Entities;
 using SavingsDeposits.Helpers;
 using SavingsDeposits.Services;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace SavingsDeposits
 {
@@ -86,6 +88,7 @@ namespace SavingsDeposits
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISavingsDepositService, SavingsDepositService>();
+            services.AddSingleton<IHostedService, DailySavingsComputationService>();
             
         }
 
