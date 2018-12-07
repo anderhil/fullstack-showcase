@@ -13,9 +13,9 @@ namespace SavingsDeposits.Services
     public interface ISavingsDepositService
     {
         Task CreateNewSavingsDepositAsync(SavingsDeposit entity);
-        Task<IEnumerable<SavingsDeposit>> GetSavingsDepositsByOwnerId(string id);
-        Task UpdateSavingsDeposit(string userId, SavingsDeposit entity);
-        Task DeleteSavingsDeposit(string userId, int entityId);
+        Task<IEnumerable<SavingsDeposit>> GetSavingsDepositsByOwnerIdAsync(string id);
+        Task UpdateSavingsDepositAsync(string userId, SavingsDeposit entity);
+        Task DeleteSavingsDepositAsync(string userId, int entityId);
     }
     public class SavingsDepositService : ISavingsDepositService 
     {
@@ -28,18 +28,18 @@ namespace SavingsDeposits.Services
         
         public async Task CreateNewSavingsDepositAsync(SavingsDeposit entity)
         {
-            _context.SavingDeposit.Add(entity);
+            _context.SavingsDeposits.Add(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<SavingsDeposit>> GetSavingsDepositsByOwnerId(string id)
+        public async Task<IEnumerable<SavingsDeposit>> GetSavingsDepositsByOwnerIdAsync(string id)
         {
-            return await _context.SavingDeposit.Where(x => x.Owner == id).ToListAsync();
+            return await _context.SavingsDeposits.Where(x => x.Owner == id).ToListAsync();
         }
 
-        public async Task UpdateSavingsDeposit(string userId, SavingsDeposit entity)
+        public async Task UpdateSavingsDepositAsync(string userId, SavingsDeposit entity)
         {
-            var result = await _context.SavingDeposit.Where(x => x.Id == entity.Id).Select(x=>x.Owner).FirstOrDefaultAsync();
+            var result = await _context.SavingsDeposits.Where(x => x.Id == entity.Id).Select(x=>x.Owner).FirstOrDefaultAsync();
 
             if (result == null)
             {
@@ -58,9 +58,9 @@ namespace SavingsDeposits.Services
             }
         }
 
-        public async Task DeleteSavingsDeposit(string userId, int entityId)
+        public async Task DeleteSavingsDepositAsync(string userId, int entityId)
         {
-            var result = await _context.SavingDeposit.Where(x => x.Id == entityId).FirstOrDefaultAsync();
+            var result = await _context.SavingsDeposits.Where(x => x.Id == entityId).FirstOrDefaultAsync();
 
             if (result == null)
             {

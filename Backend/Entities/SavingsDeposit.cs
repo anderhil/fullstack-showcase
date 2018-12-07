@@ -18,6 +18,9 @@ namespace SavingsDeposits.Entities
         public int YearlyInterestPercentage { get; set; }
         public int TaxPercentage { get; set; }
         
+        public decimal CurrentProfitAfterTax { get; set; }
+        public DateTime LastCalculation { get; set; }
+        
          
         //A saving deposit is identified by a bank name,
         //account number, an initial amount saved (currency in USD), start date, end date,

@@ -14,7 +14,8 @@ namespace SavingsDeposits.Data
             {
             }
 
-            public DbSet<Entities.SavingsDeposit> SavingDeposit { get; set; }
+            public DbSet<Entities.SavingsDeposit> SavingsDeposits { get; set; }
+            public DbSet<Entities.DepositHistory> DepositsHistory { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -25,6 +26,8 @@ namespace SavingsDeposits.Data
             }
 
              builder.Entity<SavingsDeposit>().HasOne<User>().WithMany().HasForeignKey(s => s.Owner);
+            
+             builder.Entity<DepositHistory>().HasOne<SavingsDeposit>().WithMany().HasForeignKey(s => s.SavingsDepositId);
         }
     }
 }

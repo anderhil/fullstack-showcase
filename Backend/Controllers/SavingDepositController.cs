@@ -48,7 +48,7 @@ namespace SavingsDeposits.Controllers
             
             string userId = GetUserId(HttpContext.User);
 
-            var result = await _savingsService.GetSavingsDepositsByOwnerId(userId);
+            var result = await _savingsService.GetSavingsDepositsByOwnerIdAsync(userId);
                         
             var savingsEntity = _mapper.Map<IEnumerable<SavingsDepositDTO>>(result);
 
@@ -70,7 +70,7 @@ namespace SavingsDeposits.Controllers
 
             SavingsDeposit result = _mapper.Map<SavingsDeposit>(savingsDepositDTO);
             string requestUserId = GetUserId(HttpContext.User);
-            await _savingsService.UpdateSavingsDeposit(requestUserId, result);
+            await _savingsService.UpdateSavingsDepositAsync(requestUserId, result);
            
             
             return NoContent();
@@ -109,7 +109,7 @@ namespace SavingsDeposits.Controllers
             }
 
             string userId = GetUserId(HttpContext.User);
-            await _savingsService.DeleteSavingsDeposit(userId, id);
+            await _savingsService.DeleteSavingsDepositAsync(userId, id);
 
             return Ok();
         }
