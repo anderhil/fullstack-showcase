@@ -1,12 +1,16 @@
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {ServerEndpoints} from './serverendpoints';
+import {User} from '../models/user';
 
 export class AppHttpClient {
 
   baseAddress = 'http://localhost:5000';
-
-  constructor(private http: HttpClient) {
+  headers: HttpHeaders = new HttpHeaders();
+  constructor(private http: HttpClient, protected user: User) {
+    if (this.user && this.user.tokenString) {
+      this.headers = new HttpHeaders({'Authorization': 'Bearer ' + this.user.tokenString});
+    }
   }
 
 
@@ -15,13 +19,15 @@ export class AppHttpClient {
   }
 
   post<T>(endpoint: ServerEndpoints, body: any): Observable<T> {
-
-    return this.http.post<T>(this.addBase(endpoint), body);
+    return this.http.post<T>(this.addBase(endpoint), body, {headers: this.headers});
   }
 
-  get<T>(endpoint: ServerEndpoints, param: any): Observable<T> {
-    const path = this.addBase(endpoint) + '/' + param;
-    return this.http.get<T>(path);
+  get<T>(endpoint: ServerEndpoints, param?: any): Observable<T> {
+    let path = this.addBase(endpoint) ;
+    if (param) {
+      path = path + '/' + param;
+    }
+    return this.http.get<T>(path, {headers: this.headers});
   }
 
 }
