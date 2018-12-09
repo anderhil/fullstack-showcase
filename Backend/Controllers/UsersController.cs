@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -40,16 +41,21 @@ namespace SavingsDeposits.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]UserDto userDto)
+        public async Task<IActionResult> Authenticate([FromBody]UserDto userDto)
         {
-            User user = _userService.Authenticate(userDto.Username, userDto.Password).Result;
+            User user = await _userService.Authenticate(userDto.Username, userDto.Password);
 
             if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            string mainRole = _userManager.GetRolesAsync(user).Result.First();
+            var roles = await _userManager.GetRolesAsync(user);
+            string mainRole = roles.FirstOrDefault();
+            if (mainRole == null)
+            {
+                throw new AppException("User doesn't have a role");
+            }
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 
@@ -65,15 +71,15 @@ namespace SavingsDeposits.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-            return Ok(new{tokenString});
+            return Ok(new{user.UserName,tokenString});
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromBody]UserDto userDto)
+        public async Task<IActionResult> Register([FromBody]UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
-            var info = _userService.Create(user, userDto.Password, Enum.Parse<AppUserRole>(userDto.Role)).Result;
+            var info = await _userService.Create(user, userDto.Password, Enum.Parse<AppUserRole>(userDto.Role, true));
           
             if(info.Succeeded)
             {

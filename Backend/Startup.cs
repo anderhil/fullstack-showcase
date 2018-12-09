@@ -83,13 +83,15 @@ namespace SavingsDeposits
             _appSettings = appSettingsSection.Get<AppSettings>();
          
             ConfigureJwt(services);
-          
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddCors();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISavingsDepositService, SavingsDepositService>();
             services.AddSingleton<IHostedService, DailySavingsComputationService>();
-            
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+           
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,16 +99,16 @@ namespace SavingsDeposits
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+           //     app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseHsts();
             }
 
+            app.UseCors(x=>x.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod());
             app.UseMiddleware<ExceptionHandlingMiddleware>();
-
-            app.UseHttpsRedirection();
+//            app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMvc();
         }

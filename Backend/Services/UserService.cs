@@ -79,9 +79,13 @@ namespace SavingsDeposits.Services
                         var res = await _userManager.DeleteAsync(user);                        
                     }
                 }
+                else
+                {
+                    throw new AppException($"Something went wrong: {result.Errors.First().Description}");                    
+                }
             }
+            throw new NotFoundException("User already registered");                    
 
-            throw new AppException("Something went wrong");
         }
 
         public void Update(User user, string password = null)
