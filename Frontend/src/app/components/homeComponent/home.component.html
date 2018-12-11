@@ -1,9 +1,11 @@
-<h1>Hi {{currentUser.username}}!</h1>
-<p>You're logged</p>
-<h3>All savings deposits:</h3>
-<ul>
-  <li *ngFor="let savingsDeposit of savingsDeposits">
-    {{savingsDeposit.bankName}} {{savingsDeposit.accountNumber}} {{savingsDeposit.taxPercentage}} {{savingsDeposit.initialAmount}}
-    - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a>
-  </li>
-</ul>
+<div class="parent">
+  <div>
+    <button class="btn btn-lg btn-default" [routerLink]="['/savingsCreate']">Add new savings deposit</button>
+  </div>
+  <div>
+    <button class="btn" [routerLink]="['/savingsView']">View savings deposits</button>
+  </div>
+  <!--<div>-->
+    <!--<button class="btn" routerLink]="['/savingsReport']">Create savings report</button>-->
+  <!--</div>-->
+</div>

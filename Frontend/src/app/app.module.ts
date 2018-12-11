@@ -8,13 +8,17 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {RegisterComponent} from './components/registerComponent/register.component';
 import {HomeComponent} from './components/homeComponent/home.component';
+import {SavingsViewComponent} from './components/savingsDepositComponents/savings.view.component';
+import {SavingsEditorComponent} from './components/savingsDepositComponents/savings.editor.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent
+    HomeComponent,
+    SavingsViewComponent,
+    SavingsEditorComponent
   ],
   imports: [
     BrowserModule,

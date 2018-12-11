@@ -36,6 +36,17 @@ namespace SavingsDeposits.Controllers
         public IEnumerable<SavingsDepositDTO> GetSavingDeposit()
         {
             return Enumerable.Empty<SavingsDepositDTO>(); //_context.SavingDeposit;
+        }  
+        
+        [HttpGet]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetSavingDeposit([FromRoute]int id)
+        {
+            string userId = GetUserId(HttpContext.User);
+
+            var result = await _savingsService.GetSavingsDepositByOwnerIdAsync(userId, id);
+
+            return Ok(result);
         }
         
         [HttpGet("all")]

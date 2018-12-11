@@ -12,7 +12,7 @@ export class BaseService {
     const user = JSON.parse(localStorage.getItem('currentUser'));
     this.currentUserSubject = new BehaviorSubject<User>(user);
     this.currentUser = this.currentUserSubject.asObservable();
-    this.extendedHttp = new AppHttpClient(http, this.currentUserValue);
+    this.extendedHttp = new AppHttpClient(http, this.currentUserSubject);
   }
 
   public get currentUserValue(): User {

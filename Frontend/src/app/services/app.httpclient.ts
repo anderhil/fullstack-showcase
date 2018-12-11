@@ -6,20 +6,23 @@ import {User} from '../models/user';
 export class AppHttpClient {
 
   baseAddress = 'http://localhost:5000';
-  headers: HttpHeaders = new HttpHeaders();
-  constructor(private http: HttpClient, protected user: User) {
-    if (this.user && this.user.tokenString) {
-      this.headers = new HttpHeaders({'Authorization': 'Bearer ' + this.user.tokenString});
-    }
-  }
+  constructor(private http: HttpClient, protected user: BehaviorSubject<User>) {
 
+  }
+  
+  headers(): HttpHeaders {
+    if (this.user.value && this.user.value.tokenString) {
+      return new HttpHeaders({'Authorization': 'Bearer ' + this.user.value.tokenString});
+    }
+    return new HttpHeaders();
+  }
 
   addBase(endpoint: ServerEndpoints) {
     return this.baseAddress + '/' + endpoint;
   }
 
   post<T>(endpoint: ServerEndpoints, body: any): Observable<T> {
-    return this.http.post<T>(this.addBase(endpoint), body, {headers: this.headers});
+    return this.http.post<T>(this.addBase(endpoint), body, {headers: this.headers()});
   }
 
   get<T>(endpoint: ServerEndpoints, param?: any): Observable<T> {
@@ -27,7 +30,7 @@ export class AppHttpClient {
     if (param) {
       path = path + '/' + param;
     }
-    return this.http.get<T>(path, {headers: this.headers});
+    return this.http.get<T>(path, {headers: this.headers()});
   }
 
 }

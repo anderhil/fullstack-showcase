@@ -17,4 +17,8 @@ export class SavingsDepositService extends BaseService {
   public getAllSavings() {
     return this.extendedHttp.get<SavingsDeposit[]>(ServerEndpoints.USERSAVINGS);
   }
+
+  public getSavingsDeposit(id: number) {
+    return this.extendedHttp.get<SavingsDeposit>(ServerEndpoints.USERSAVINGDEPOSIT, id);
+  }
 }

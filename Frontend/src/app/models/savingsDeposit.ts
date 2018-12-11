@@ -3,8 +3,8 @@ export class SavingsDeposit {
   bankName: string;
   accountNumber: number;
   initialAmount: number;
-  startDate: any;
-  endDate: any;
+  startDate: Date;
+  endDate: Date;
   yearlyInterestPercentage: number;
   taxPercentage: number;
 

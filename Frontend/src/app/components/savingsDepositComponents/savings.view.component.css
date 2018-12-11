@@ -1,0 +1,15 @@
+.parentContainer {
+  display: flex; flex-direction: row; flex-wrap: nowrap; padding: 5px;
+  align-items: center;
+  justify-content: flex-start;
+}
+.item{
+  margin: 5px;
+}
+.item label {
+  height: 25px;
+}
+.item input {
+  height: 25px;
+}
+

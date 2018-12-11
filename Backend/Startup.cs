@@ -88,7 +88,9 @@ namespace SavingsDeposits
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISavingsDepositService, SavingsDepositService>();
             services.AddSingleton<IHostedService, DailySavingsComputationService>();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(x=>x.SerializerSettings.DateFormatString = "yyyy-MM-dd");
 
            
 

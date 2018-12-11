@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SavingsDeposits.Data;
@@ -14,6 +15,7 @@ namespace SavingsDeposits.Services
     {
         Task CreateNewSavingsDepositAsync(SavingsDeposit entity);
         Task<IEnumerable<SavingsDeposit>> GetSavingsDepositsByOwnerIdAsync(string id);
+        Task<SavingsDeposit> GetSavingsDepositByOwnerIdAsync(string userId, int savingsDepositId);
         Task UpdateSavingsDepositAsync(string userId, SavingsDeposit entity);
         Task DeleteSavingsDepositAsync(string userId, int entityId);
     }
@@ -37,13 +39,25 @@ namespace SavingsDeposits.Services
             return await _context.SavingsDeposits.Where(x => x.Owner == id).ToListAsync();
         }
 
+        public async Task<SavingsDeposit> GetSavingsDepositByOwnerIdAsync(string userId, int savingsDepositId)
+        {
+            var result = await _context.SavingsDeposits.Where(x => x.Owner == userId && x.Id == savingsDepositId).SingleOrDefaultAsync();
+
+            if (result == null)
+            {
+                throw new NotFoundException("No deposit found for current user");
+            }
+
+            return result;
+        }
+
         public async Task UpdateSavingsDepositAsync(string userId, SavingsDeposit entity)
         {
             var result = await _context.SavingsDeposits.Where(x => x.Id == entity.Id).Select(x=>x.Owner).FirstOrDefaultAsync();
 
             if (result == null)
             {
-                throw new NotFoundException("");
+                throw new NotFoundException("Deposit not found for current user");
             }
 
             if(result == userId)            

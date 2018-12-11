@@ -1,0 +1,100 @@
+<div class="parentContainer">
+  <!--amount (minimum and maximum), bank name and date.-->
+  <div class="item">
+    <label>Bank name: </label>
+    <select [value]="currentBank" (change)="currentBank = $event.target.value; filter()">
+      <option value="0">--All--</option>
+      <option *ngFor="let bankName of banksDistinct" value={{bankName}}>
+        {{bankName}}
+      </option>
+    </select>
+  </div>
+  <div class="item">
+    <label>Min value: </label>
+    <input type="number" [value]="minAmount" (change)="minAmount = $event.target.value; filter()" />
+  </div>
+  <div class="item">
+    <label>Max value: </label>
+    <input type="number" [value]="maxAmount" (change)="maxAmount = $event.target.value; filter()" />
+  </div>
+  <div class="item" style="font-size: 14px">
+    <label>Start date: </label>
+    <input type="date" [value]="startDate" (change)="startDate = $event.target.value; filter()">
+  </div>
+  <div class="item" style="font-size: 14px">
+    <label>End date: </label>
+    <input type="date" [value]="endDate" (change)="endDate = $event.target.value; filter()">
+  </div>
+  <div class="item">
+    <label style="visibility: hidden">Reset</label>
+    <button class="btn btn-primary" (click)="reset()">Reset</button>
+  </div>
+</div>
+<div>
+  <table class="table table-bordered">
+  <thead class="thead-dark">
+  <tr>
+    <th scope="col">
+      Bank name
+    </th>
+    <th scope="col">
+      Account number
+    </th>
+    <th scope="col">
+      Tax percentage
+    </th>
+    <th scope="col">
+      Interest percentage
+    </th>
+    <th scope="col">
+      Initial amount
+    </th>
+    <th scope="col">
+      Start date
+    </th>
+    <th scope="col">
+      End date
+    </th>
+    <th scope="col">
+      Edit link
+    </th>
+    <th scope="col">
+      Delete
+    </th>
+  </tr>
+  </thead>
+  <tbody style="background-color: white">
+  <tr *ngFor="let savingsDeposit of savingsDeposits">
+    <td>
+      {{savingsDeposit.bankName}}
+      <!--<input type="text" disabled [value]="savingsDeposit.bankName">-->
+    </td>
+    <td>
+      {{savingsDeposit.accountNumber}}
+    </td>
+    <td>
+      {{savingsDeposit.taxPercentage}}%
+    </td>
+    <td>
+      {{savingsDeposit.yearlyInterestPercentage}}%
+    </td>
+    <td>
+      ${{savingsDeposit.initialAmount}}
+    </td>
+    <td>
+      {{savingsDeposit.startDate}}
+    </td>
+    <td>
+      {{savingsDeposit.endDate}}
+    </td>
+    <td>
+      <a [routerLink]="['/savingsEditor/'+savingsDeposit.id]" class="btn btn-link">Edit</a>
+    </td>
+    <td>
+      Delete<!--<a [routerLink]="['/editDeposit/'+savingsDeposit.id]" class="btn btn-link">Edit</a>-->
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+
