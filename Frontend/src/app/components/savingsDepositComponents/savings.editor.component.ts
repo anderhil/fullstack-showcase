@@ -6,7 +6,7 @@ import {SavingsDepositService} from '../../services/savingsDeposits.service';
 import {User} from '../../models/user';
 import {SavingsDeposit} from '../../models/savingsDeposit';
 import {Subscription} from 'rxjs';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({templateUrl: 'savings.editor.component.html'})
 export class SavingsEditorComponent implements OnInit {
@@ -15,6 +15,10 @@ export class SavingsEditorComponent implements OnInit {
   savingEditorForm: FormGroup;
   savingsDeposit: SavingsDeposit = new SavingsDeposit();
 
+  submitted = false;
+  loading = false;
+
+  isCreateView = false;
 
   constructor(
     private router: Router,
@@ -28,29 +32,64 @@ export class SavingsEditorComponent implements OnInit {
     });
   }
 
-
   get formControl() { return this.savingEditorForm.controls; }
 
   ngOnInit() {
+
     this.savingEditorForm = this.formBuilder.group({
-      bankName: ['', Validators.required],
-      accountNumber: ['', [Validators.required, Validators.pattern('\d+')]],
+      id: [], // ['', Validators.required],
+      bankName: new FormControl(this.savingsDeposit.bankName, [Validators.required]), // ['', Validators.required],
+      accountNumber: ['', [Validators.required, Validators.pattern(/\d+/)]],
       taxPercentage: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
       yearlyInterestPercentage: ['', [Validators.required, Validators.min(-100), Validators.max(100)]],
-      initialAmount: ['', [Validators.required, Validators.pattern('\d+')]],
+      initialAmount: ['', [Validators.required, Validators.pattern(/\d+/)]],
       startDate: ['', [Validators.required]],
       endDate: ['', [Validators.required]]
 
     });
+
     this.route.params.subscribe(params => {
       const savingId = params['savingsDeposit'];
-      this.savingsService.getSavingsDeposit(savingId).subscribe(x => {
-        this.savingsDeposit = x;
-      });
+      if (savingId > 0) {
+        this.savingsService.getSavingsDeposit(savingId).subscribe(x => {
+          this.savingsDeposit = x;
+          this.savingEditorForm.patchValue(this.savingsDeposit);
+        });
+      } else {
+        this.isCreateView = true;
+        this.savingsDeposit.id = 0;
+        this.savingsDeposit.bankName = '';
+        this.savingEditorForm.patchValue(this.savingsDeposit);
+      }
     });
   }
 
   onSubmit() {
+
+    this.submitted = true;
+
+    if (this.savingEditorForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
+
+    const id = this.savingsDeposit.id;
+    this.savingsDeposit = this.savingEditorForm.value;
+    this.savingsDeposit.id = id;
+    if (this.savingsDeposit.id === 0) {
+      this.savingsService.createSavingsDeposit(this.savingsDeposit).pipe(first())
+        .subscribe(
+          next => {this.router.navigate(['/savingsView']); },
+          error => {this.loading = false; });
+    } else {
+      this.savingsService.updateSavingsDeposit(this.savingsDeposit).pipe(first())
+        .subscribe( x => {
+            this.router.navigate(['/savingsView']);
+    },
+          error => {this.loading = false; });
+    }
+
   }
 
 }

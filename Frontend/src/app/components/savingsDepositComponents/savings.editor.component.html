@@ -5,7 +5,7 @@
   <div class="form-group">
     <label for="bankName">Bank name</label>
     <input type="text" formControlName="bankName" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.bankName.errors }"
-    [value]="savingsDeposit.bankName"/>
+    />
     <div *ngIf="submitted && formControl.bankName.errors" class="invalid-feedback">
       <div *ngIf="formControl.bankName.required">Bank name required</div>
     </div>
@@ -14,7 +14,7 @@
   <div class="form-group">
     <label for="accountNumber">Account number</label>
     <input type="text" formControlName="accountNumber" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.accountNumber.errors }"
-    [value]="savingsDeposit.accountNumber"/>
+    />
     <div *ngIf="submitted && formControl.accountNumber.errors" class="invalid-feedback">
       <div *ngIf="formControl.accountNumber.required">Account number required</div>
     </div>
@@ -23,7 +23,7 @@
   <div class="form-group">
     <label for="taxPercentage">Tax (%)</label>
     <input type="number"  min="0" max="100" formControlName="taxPercentage" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.taxPercentage.errors }"
-           [value]="savingsDeposit.taxPercentage"/>
+           />
     <div *ngIf="submitted && formControl.taxPercentage.errors" class="invalid-feedback">
       <div *ngIf="formControl.taxPercentage.required">Account number required</div>
     </div>
@@ -33,7 +33,7 @@
     <label for="yearlyInterestPercentage">Yearly interest (%)</label>
     <div>
       <input type="number"  min="-100" max="100" formControlName="yearlyInterestPercentage" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.yearlyInterestPercentage.errors }"
-             [value]="savingsDeposit.yearlyInterestPercentage"/>
+             />
     </div>
     <div *ngIf="submitted && formControl.yearlyInterestPercentage.errors" class="invalid-feedback">
       <div *ngIf="formControl.yearlyInterestPercentage.required">Account number required</div>
@@ -43,7 +43,7 @@
   <div class="form-group">
     <label for="initialAmount">Initial amount</label>
     <input type="number" formControlName="initialAmount" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.initialAmount.errors }"
-           [value]="savingsDeposit.initialAmount"/>
+           />
     <div *ngIf="submitted && formControl.initialAmount.errors" class="invalid-feedback">
       <div *ngIf="formControl.initialAmount.required">Account number required</div>
     </div>
@@ -51,7 +51,7 @@
   <div class="form-group">
     <label for="startDate">Start date</label>
     <input type="date" formControlName="startDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.startDate.errors }"
-           [value]="savingsDeposit.startDate"/>
+           />
     <div *ngIf="submitted && formControl.startDate.errors" class="invalid-feedback">
       <div *ngIf="formControl.startDate.required">Account number required</div>
     </div>
@@ -59,14 +59,14 @@
   <div class="form-group">
     <label for="endDate">End date</label>
     <input type="date" [min]="savingsDeposit.startDate" formControlName="endDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.endDate.errors }"
-           [value]="savingsDeposit.endDate"/>
+           />
     <div *ngIf="submitted && formControl.endDate.errors" class="invalid-feedback">
       <div *ngIf="formControl.endDate.required">Account number required</div>
     </div>
   </div>
 
   <div class="form-group">
-    <button [disabled]="loading" class="btn btn-primary">Register</button>
+    <button [disabled]="loading || savingEditorForm.pristine" class="btn btn-primary">{{isCreateView ? 'Create' : 'Update'}}</button>
     <a [routerLink]="['/login']" class="btn btn-link">Cancel</a>
   </div>
 </form>

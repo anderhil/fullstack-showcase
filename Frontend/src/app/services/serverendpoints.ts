@@ -3,5 +3,6 @@ export enum ServerEndpoints {
   REGISTER = 'api/users/register',
   GETBYID = 'api/users',
   USERSAVINGS = 'api/savings/all',
-  USERSAVINGDEPOSIT = 'api/savings'
+  USERSAVINGDEPOSIT = 'api/savings',
+  USERSAVINGDEPOSITNEW = 'api/savings/createNew',
 }

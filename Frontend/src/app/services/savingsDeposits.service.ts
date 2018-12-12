@@ -21,4 +21,11 @@ export class SavingsDepositService extends BaseService {
   public getSavingsDeposit(id: number) {
     return this.extendedHttp.get<SavingsDeposit>(ServerEndpoints.USERSAVINGDEPOSIT, id);
   }
+
+  public createSavingsDeposit(savingDeposit: SavingsDeposit) {
+    return this.extendedHttp.post(ServerEndpoints.USERSAVINGDEPOSIT, savingDeposit);
+  }
+  public updateSavingsDeposit(savingDeposit: SavingsDeposit) {
+    return this.extendedHttp.put(ServerEndpoints.USERSAVINGDEPOSIT, savingDeposit, savingDeposit.id);
+  }
 }
