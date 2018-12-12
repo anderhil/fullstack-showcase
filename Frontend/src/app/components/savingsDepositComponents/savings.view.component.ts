@@ -21,8 +21,6 @@ export class SavingsViewComponent implements OnInit {
   startDate: Date;
   endDate: Date;
 
-
-
   constructor(
     private router: Router,
     private authService: AuthService,

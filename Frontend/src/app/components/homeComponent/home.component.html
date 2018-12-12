@@ -1,9 +1,20 @@
-<div class="parent">
+<div *ngIf="isUser()" class="parent">
   <div>
     <button class="btn btn-lg btn-default" [routerLink]="['/savingsEditor/0']">Add new savings deposit</button>
   </div>
   <div>
     <button class="btn" [routerLink]="['/savingsView']">View savings deposits</button>
+  </div>
+  <!--<div>-->
+    <!--<button class="btn" routerLink]="['/savingsReport']">Create savings report</button>-->
+  <!--</div>-->
+</div>
+<div *ngIf="!isUser()" class="parent">
+  <div>
+    <button class="btn btn-lg btn-default" [routerLink]="['/savingsEditor/0']">Add new user</button>
+  </div>
+  <div>
+    <button class="btn" [routerLink]="['/savingsView']">View users</button>
   </div>
   <!--<div>-->
     <!--<button class="btn" routerLink]="['/savingsReport']">Create savings report</button>-->
