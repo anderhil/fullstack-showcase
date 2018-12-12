@@ -1,13 +1,11 @@
 <h2>Add new savings deposit</h2>
 <form [formGroup]="savingEditorForm" (ngSubmit)="onSubmit()">
-
-
   <div class="form-group">
     <label for="bankName">Bank name</label>
     <input type="text" formControlName="bankName" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.bankName.errors }"
     />
     <div *ngIf="submitted && formControl.bankName.errors" class="invalid-feedback">
-      <div *ngIf="formControl.bankName.required">Bank name required</div>
+      <div *ngIf="formControl.bankName.errors.required">Bank name required</div>
     </div>
   </div>
 
@@ -16,7 +14,8 @@
     <input type="text" formControlName="accountNumber" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.accountNumber.errors }"
     />
     <div *ngIf="submitted && formControl.accountNumber.errors" class="invalid-feedback">
-      <div *ngIf="formControl.accountNumber.required">Account number required</div>
+      <div *ngIf="formControl.accountNumber.errors.required">Account number required</div>
+      <div *ngIf="formControl.accountNumber.errors.pattern">Number expected</div>
     </div>
   </div>
 
@@ -25,18 +24,20 @@
     <input type="number"  min="0" max="100" formControlName="taxPercentage" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.taxPercentage.errors }"
            />
     <div *ngIf="submitted && formControl.taxPercentage.errors" class="invalid-feedback">
-      <div *ngIf="formControl.taxPercentage.required">Account number required</div>
+      <div *ngIf="formControl.taxPercentage.errors.required">Tax required</div>
+      <div *ngIf="formControl.taxPercentage.errors.min">Tax cannot be less than 0</div>
+      <div *ngIf="formControl.taxPercentage.errors.max">Tax cannot be more than 100</div>
     </div>
   </div>
 
   <div class="form-group">
     <label for="yearlyInterestPercentage">Yearly interest (%)</label>
-    <div>
       <input type="number"  min="-100" max="100" formControlName="yearlyInterestPercentage" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.yearlyInterestPercentage.errors }"
              />
-    </div>
     <div *ngIf="submitted && formControl.yearlyInterestPercentage.errors" class="invalid-feedback">
-      <div *ngIf="formControl.yearlyInterestPercentage.required">Account number required</div>
+      <div *ngIf="formControl.yearlyInterestPercentage.errors.required">Interest required</div>
+      <div *ngIf="formControl.yearlyInterestPercentage.errors.min">Interest cannot be less than -100</div>
+      <div *ngIf="formControl.yearlyInterestPercentage.errors.max">Interest cannot be more than 100</div>
     </div>
   </div>
 
@@ -45,7 +46,8 @@
     <input type="number" formControlName="initialAmount" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.initialAmount.errors }"
            />
     <div *ngIf="submitted && formControl.initialAmount.errors" class="invalid-feedback">
-      <div *ngIf="formControl.initialAmount.required">Account number required</div>
+      <div *ngIf="formControl.initialAmount.errors.required">Initial amount required</div>
+      <div *ngIf="formControl.initialAmount.errors.pattern">Number expected</div>
     </div>
   </div>
   <div class="form-group">
@@ -53,7 +55,7 @@
     <input type="date" formControlName="startDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.startDate.errors }"
            />
     <div *ngIf="submitted && formControl.startDate.errors" class="invalid-feedback">
-      <div *ngIf="formControl.startDate.required">Account number required</div>
+      <div *ngIf="formControl.startDate.errors.required">Start date required</div>
     </div>
   </div>
   <div class="form-group">
@@ -61,7 +63,7 @@
     <input type="date" [min]="savingsDeposit.startDate" formControlName="endDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.endDate.errors }"
            />
     <div *ngIf="submitted && formControl.endDate.errors" class="invalid-feedback">
-      <div *ngIf="formControl.endDate.required">Account number required</div>
+      <div *ngIf="formControl.endDate.errors.required">End date required</div>
     </div>
   </div>
 
