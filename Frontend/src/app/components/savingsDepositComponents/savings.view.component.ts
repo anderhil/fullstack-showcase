@@ -14,7 +14,7 @@ export class SavingsViewComponent implements OnInit {
   savingsDeposits: SavingsDeposit[] = [];
   cachedSavingsDeposits: SavingsDeposit[] = [];
   banksDistinct: Set<string>;
-  currentBank: string;
+  currentBank = '0';
 
   adminMode = false;
   userName = '';
@@ -78,13 +78,30 @@ export class SavingsViewComponent implements OnInit {
 
   }
 
-  navigate(savingId) {
+  navigateEdit(savingId) {
     if (this.adminMode) {
       this.router.navigate(['savingsEditor', savingId, {'userName': this.userName}]);
     } else {
       this.router.navigate(['savingsEditor', savingId]);
     }
   }
+
+  performDelete(savingId) {
+    if (!confirm('This record will be deleted, are you sure you want to do this?')) {
+      return;
+    }
+    this.savingsService.deleteSaving(savingId).subscribe(data => {
+          // let index = this.savingsDeposits.findIndex(x => x.id === savingId);
+          // this.savingsDeposits.splice(index, 1);
+          const index = this.cachedSavingsDeposits.findIndex(x => x.id === savingId);
+          this.cachedSavingsDeposits.splice(index, 1);
+          this.filter();
+      }
+    , error => {
+
+    });
+  }
+
 
   private loadAllSavings(user?: string) {
     let request: Observable<SavingsDeposit[]>;

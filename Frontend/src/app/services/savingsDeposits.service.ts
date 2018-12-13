@@ -15,24 +15,33 @@ export class SavingsDepositService extends BaseService {
   }
 
   public getAllSavings() {
-    return this.extendedHttp.get<SavingsDeposit[]>(ServerEndpoints.USERSAVINGS);
+    return this.extendedHttp.get<SavingsDeposit[]>(ServerEndpoints.USERSAVINGSAPIALL);
+  }
+
+  public deleteSaving(savingsId: number) {
+    return this.extendedHttp.delete(ServerEndpoints.USERSAVINGDSAPI, savingsId);
   }
 
   public getAllSavingsByUser(userName: string) {
-    return this.extendedHttp.get<SavingsDeposit[]>(ServerEndpoints.USERSAVINGS, userName);
+    return this.extendedHttp.get<SavingsDeposit[]>(ServerEndpoints.USERSAVINGSAPIALL, userName);
   }
 
   public getSavingsDeposit(id: number) {
-    return this.extendedHttp.get<SavingsDeposit>(ServerEndpoints.USERSAVINGDEPOSIT, id);
+    return this.extendedHttp.get<SavingsDeposit>(ServerEndpoints.USERSAVINGDSAPI, id);
   }
   public getSavingsDepositByUser(id: number, user: string) {
-    return this.extendedHttp.getWithTwoParams<SavingsDeposit>(ServerEndpoints.USERSAVINGDEPOSIT, id, user);
+    return this.extendedHttp.getWithTwoParams<SavingsDeposit>(ServerEndpoints.USERSAVINGDSAPI, id, user);
   }
 
   public createSavingsDeposit(savingDeposit: SavingsDeposit) {
-    return this.extendedHttp.post(ServerEndpoints.USERSAVINGDEPOSIT, savingDeposit);
+    return this.extendedHttp.post(ServerEndpoints.USERSAVINGDSAPI, savingDeposit);
   }
+
+  public createSavingsDepositForUser(userName: string, savingDeposit: SavingsDeposit) {
+    return this.extendedHttp.postWithParam(ServerEndpoints.USERSAVINGDSAPI, userName, savingDeposit);
+  }
+
   public updateSavingsDeposit(savingDeposit: SavingsDeposit) {
-    return this.extendedHttp.put(ServerEndpoints.USERSAVINGDEPOSIT, savingDeposit, savingDeposit.id);
+    return this.extendedHttp.put(ServerEndpoints.USERSAVINGDSAPI, savingDeposit, savingDeposit.id);
   }
 }

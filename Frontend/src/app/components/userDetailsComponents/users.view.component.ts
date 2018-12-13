@@ -29,10 +29,25 @@ export class UsersViewComponent implements OnInit {
     this.loadAllUsers();
   }
 
+  deleteUser(username: string) {
+
+    if (!confirm('Are you sure you want to remove : ' + username)) {
+      return;
+    }
+
+    this.userService.delete(username).subscribe( data => {
+          const index = this.users.findIndex(x => x.username === username);
+          this.users.splice(index, 1);
+          }, error => {});
+  }
+
+  navigateTo(userName: string) {
+    this.router.navigate(['savingsEditor', 0, {'userName': userName}]);
+  }
+
   private loadAllUsers() {
     this.userService.getAll().pipe(first()).subscribe(users => {
       this.users = users;
-      this.cachedSavingsDeposits = users;
     });
   }
 

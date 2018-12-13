@@ -25,6 +25,18 @@ export class AppHttpClient {
     return this.http.post<T>(this.addBase(endpoint), body, {headers: this.headers()});
   }
 
+  postWithParam<T>(endpoint: ServerEndpoints, param: any, body: any): Observable<T> {
+    let path = this.addBase(endpoint) ;
+    if (param) {
+      path = path + '/' + param;
+    }
+    return this.http.post<T>(path, body, {headers: this.headers()});
+  }
+
+  delete<T>(endpoint: ServerEndpoints, id: T) {
+    return this.http.delete<T>(this.addBase(endpoint) + '/' + id, {headers: this.headers()});
+  }
+
   put<T>(endpoint: ServerEndpoints, body: any, param?: any): Observable<T> {
     let path = this.addBase(endpoint) ;
     if (param) {

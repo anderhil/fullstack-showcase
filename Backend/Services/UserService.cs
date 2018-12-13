@@ -25,7 +25,9 @@ namespace SavingsDeposits.Services
         Task<string> GetByNameAsync(string userName);
         Task<IdentityResult> CreateAsync(User user, string password, AppUserRole role = AppUserRole.User);
         Task UpdateAsync(User user);
-        void Delete(int id);
+        Task DeleteAsync(string userName);
+        bool IsAdmin(ClaimsPrincipal principal);
+        bool IsUserEditor(ClaimsPrincipal principal);
     }  
     
     
@@ -137,11 +139,6 @@ namespace SavingsDeposits.Services
             
             string oldRole = roles.SingleOrDefault();
             
-            if (string.IsNullOrEmpty(oldRole))
-            {
-                //throw new AppException("User has to have role attached");
-            }
-            
             foundUser.Email = user.Email;
             foundUser.UserName = user.UserName;
             foundUser.FullName = user.FullName;
@@ -160,9 +157,41 @@ namespace SavingsDeposits.Services
             await _userManager.UpdateAsync(foundUser);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(string userName)
         {
-            throw new System.NotImplementedException();
+            User foundUser = await _userManager.Users.Where(x => x.UserName == userName).SingleOrDefaultAsync();
+
+            if (foundUser == null)
+            {
+                throw new NotFoundException("User not found");
+            }
+
+            await _userManager.DeleteAsync(foundUser);
+        }
+
+        public bool IsAdmin(ClaimsPrincipal principal)
+        {
+            ClaimsPrincipal contextUser = principal;
+
+            string stringRole = Enum.GetName(typeof(AppUserRole), AppUserRole.Admin);
+   //         bool isContextAdmin = contextUser.Claims.Any(x => x.Type == ClaimTypes.Role && x.Value == stringRole);    
+            return contextUser.IsInRole(stringRole);
+        }
+
+        public bool IsUserEditor(ClaimsPrincipal principal)
+        {
+            ClaimsPrincipal contextUser = principal;
+
+            foreach (AppUserRole appUserRole in new []{AppUserRole.Admin, AppUserRole.Manager})
+            {
+                string stringRole = Enum.GetName(typeof(AppUserRole), appUserRole);
+                if (contextUser.IsInRole(stringRole))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

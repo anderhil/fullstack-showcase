@@ -93,7 +93,7 @@ namespace SavingsDeposits.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles="Admin")]
+        [Authorize(Roles="Admin,Manager")]
         public async Task<IActionResult> GetAllAsync()
         {
             var users =  await _userService.GetAllAsync();
@@ -104,14 +104,8 @@ namespace SavingsDeposits.Controllers
         [HttpGet("{userName}")]
         public async Task<IActionResult> GetByUserName(string userName)
         {
-            ClaimsPrincipal contextUser = HttpContext.User;
-
-            string val = Enum.GetName(typeof(AppUserRole), AppUserRole.Admin);
-            
-            var isAdmin = contextUser.Claims.Any(x => x.Type == ClaimTypes.Role && x.Value == val);
-
             User user;
-            if (isAdmin)
+            if (_userService.IsUserEditor(HttpContext.User))
             {
                 user =  await _userService.GetByUserName(userName);                
             }
@@ -141,10 +135,11 @@ namespace SavingsDeposits.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("{userName}")]
+        [Authorize(Roles="Manager,Admin")]
+        public async Task<IActionResult> Delete(string userName)
         {
-            _userService.Delete(id);
+            await _userService.DeleteAsync(userName);
             return Ok();
         }
     }

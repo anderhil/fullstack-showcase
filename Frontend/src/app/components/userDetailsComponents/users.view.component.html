@@ -20,6 +20,9 @@
     <th *ngIf="currentUser.role == 'Admin'" scope="col">
       Savings link
     </th>
+    <th *ngIf="currentUser.role == 'Admin'" scope="col">
+      New saving
+    </th>
   </tr>
   </thead>
   <tbody style="background-color: white">
@@ -33,14 +36,17 @@
     <td>
       {{user.role}}
     </td>
-    <td *ngIf="currentUser.role == 'Admin'">
+    <td *ngIf="currentUser.role != 'User'">
       <a [routerLink]="['/userEdit/'+user.username]" class="btn btn-link">Edit</a>
     </td>
-    <td *ngIf="currentUser.role == 'Admin'">
-      Delete<!--<a [routerLink]="['/editDeposit/'+savingsDeposit.id]" class="btn btn-link">Edit</a>-->
+    <td *ngIf="currentUser.role != 'User'">
+      <button (click)="deleteUser(user.username)" class="btn btn-link">Delete user</button>
     </td>
     <td *ngIf="currentUser.role == 'Admin'">
       <a [routerLink]="['/savingsView/'+user.username]" class="btn btn-link">View user savings</a>
+    </td>
+    <td *ngIf="currentUser.role == 'Admin'">
+      <button (click)="navigateTo(user.username)" class="btn btn-link">Add new user saving</button>
     </td>
   </tr>
   </tbody>

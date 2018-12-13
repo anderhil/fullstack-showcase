@@ -8,6 +8,7 @@ import {SavingsDeposit} from '../../models/savingsDeposit';
 import {Observable, Subscription} from 'rxjs';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Location } from '@angular/common';
+import {el} from '@angular/platform-browser/testing/src/browser_util';
 
 @Component({templateUrl: 'savings.editor.component.html'})
 export class SavingsEditorComponent implements OnInit {
@@ -20,6 +21,8 @@ export class SavingsEditorComponent implements OnInit {
   loading = false;
 
   isCreateView = false;
+
+  userNameEdited: string;
 
   constructor(
     private router: Router,
@@ -54,6 +57,8 @@ export class SavingsEditorComponent implements OnInit {
       const savingId = params['savingsDeposit'];
       const user = params['userName'];
 
+      this.userNameEdited = user;
+
       let serverRequest: Observable<SavingsDeposit>;
 
       if (savingId > 0) {
@@ -83,6 +88,14 @@ export class SavingsEditorComponent implements OnInit {
     this.location.back();
   }
 
+  createOwnRecord() {
+      return this.savingsService.createSavingsDeposit(this.savingsDeposit);
+  }
+
+  createByAdmin() {
+      return this.savingsService.createSavingsDepositForUser(this.userNameEdited, this.savingsDeposit);
+  }
+
   onSubmit() {
 
     this.submitted = true;
@@ -96,19 +109,34 @@ export class SavingsEditorComponent implements OnInit {
     const id = this.savingsDeposit.id;
     this.savingsDeposit = this.savingEditorForm.value;
     this.savingsDeposit.id = id;
-    if (this.savingsDeposit.id === 0) {
-      this.savingsService.createSavingsDeposit(this.savingsDeposit).pipe(first())
-        .subscribe(
-          next => {this.router.navigate(['/savingsView']); },
-          error => {this.loading = false; });
-    } else {
+
+    // editing record
+    // same for admin and user manager
+    if (this.savingsDeposit.id > 0) {
       this.savingsService.updateSavingsDeposit(this.savingsDeposit).pipe(first())
         .subscribe( x => {
-            this.router.navigate(['/savingsView']);
-    },
+            this.goBack();
+          },
+          error => {
+          this.loading = false;
+        });
+
+    } else {
+
+      // creating new record
+      // depends which user is doing this
+      let createObservable;
+      if (this.userNameEdited) {
+        createObservable = this.createByAdmin();
+      } else {
+        createObservable = this.createOwnRecord();
+      }
+
+      createObservable.pipe(first())
+        .subscribe(
+          next => { this.goBack(); },
           error => {this.loading = false; });
     }
-
   }
 
 }

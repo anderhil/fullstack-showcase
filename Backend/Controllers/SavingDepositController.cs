@@ -111,9 +111,16 @@ namespace SavingsDeposits.Controllers
             }
 
             SavingsDeposit result = _mapper.Map<SavingsDeposit>(savingsDepositDTO);
-            string requestUserId = GetUserId(HttpContext.User);
-            await _savingsService.UpdateSavingsDepositAsync(requestUserId, result);
-           
+
+            if (_userService.IsAdmin(HttpContext.User))
+            {
+                await _savingsService.UpdateSavingsDepositAsync(result);
+            }
+            else
+            {
+                string requestUserId = GetUserId(HttpContext.User);
+                await _savingsService.UpdateSavingsDepositAsync(requestUserId, result);
+            }
             
             return NoContent();
         }
@@ -142,6 +149,25 @@ namespace SavingsDeposits.Controllers
             return Ok(new {savingsEntity.Id});
         }
 
+        [HttpPost("{userName}")]
+        [Authorize(Roles="Admin")]
+        public async Task<IActionResult> PostSavingDeposit([FromRoute]string userName,[FromBody] SavingsDepositDTO savingsDeposit)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var savingsEntity = _mapper.Map<SavingsDeposit>(savingsDeposit);
+
+            string userId = await _userService.GetByNameAsync(userName);
+            
+            savingsEntity.Owner = userId;
+            await _savingsService.CreateNewSavingsDepositAsync(savingsEntity);
+
+            return Ok(new {savingsEntity.Id});
+        }
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSavingDeposit([FromRoute] int id)
         {
@@ -150,8 +176,15 @@ namespace SavingsDeposits.Controllers
                 return BadRequest(ModelState);
             }
 
-            string userId = GetUserId(HttpContext.User);
-            await _savingsService.DeleteSavingsDepositAsync(userId, id);
+            if (_userService.IsAdmin(HttpContext.User))
+            {
+                await _savingsService.DeleteSavingsDepositAsync(id);
+            }
+            else
+            {
+                string userId = GetUserId(HttpContext.User);
+                await _savingsService.DeleteSavingsDepositAsync(userId, id);
+            }
 
             return Ok();
         }

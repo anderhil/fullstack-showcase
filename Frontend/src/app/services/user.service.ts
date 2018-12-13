@@ -28,4 +28,8 @@ export class UserService extends BaseService {
     return this.extendedHttp.put(ServerEndpoints.USERSAPI, user, user.username);
   }
 
+  delete(userName: string) {
+    return this.extendedHttp.delete(ServerEndpoints.USERSAPI, userName);
+  }
+
 }

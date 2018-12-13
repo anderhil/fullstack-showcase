@@ -14,8 +14,8 @@ namespace SavingsDeposits.Data
             {
             }
 
-            public DbSet<Entities.SavingsDeposit> SavingsDeposits { get; set; }
-            public DbSet<Entities.DepositHistory> DepositsHistory { get; set; }
+            public DbSet<SavingsDeposit> SavingsDeposits { get; set; }
+            public DbSet<DepositHistory> DepositsHistory { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -11,7 +11,7 @@
 
   <div class="form-group">
     <label for="accountNumber">Account number</label>
-    <input type="text" formControlName="accountNumber" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.accountNumber.errors }"
+    <input type="number" formControlName="accountNumber" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.accountNumber.errors }"
     />
     <div *ngIf="submitted && formControl.accountNumber.errors" class="invalid-feedback">
       <div *ngIf="formControl.accountNumber.errors.required">Account number required</div>
