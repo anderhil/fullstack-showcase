@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -19,10 +20,11 @@ namespace SavingsDeposits.Services
     {
         Task<User> Authenticate(string userName, string password);
         Task<IEnumerable<User>> GetAllAsync();
-        User GetById(int id);
+        Task<User> GetByUserName(string userName);
+        Task<User> GetByPrincipal(ClaimsPrincipal principal);
         Task<string> GetByNameAsync(string userName);
         Task<IdentityResult> CreateAsync(User user, string password, AppUserRole role = AppUserRole.User);
-        void Update(User user, string password = null);
+        Task UpdateAsync(User user);
         void Delete(int id);
     }  
     
@@ -55,7 +57,24 @@ namespace SavingsDeposits.Services
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return  await _userManager.Users.ToListAsync();
+            return await _userManager.Users.ToListAsync();
+        }
+
+        public async Task<User> GetByUserName(string userName)
+        {
+            User foundUser = await _userManager.Users.Where(x => x.UserName == userName).SingleOrDefaultAsync();
+
+            if (foundUser == null)
+            {
+                throw new NotFoundException("User not found");
+            }
+
+            return foundUser;
+        }
+
+        public async Task<User> GetByPrincipal(ClaimsPrincipal principal)
+        {
+            return await _userManager.GetUserAsync(principal);
         }
 
         public User GetById(int id)
@@ -79,6 +98,7 @@ namespace SavingsDeposits.Services
             
             user.Id = Guid.NewGuid().ToString();
             var result = await _userManager.CreateAsync(user, password);
+            
             if (result.Succeeded)
             {
                 try
@@ -98,9 +118,46 @@ namespace SavingsDeposits.Services
 
         }
 
-        public void Update(User user, string password = null)
+        public async Task UpdateAsync(User user)
         {
-            throw new System.NotImplementedException();
+            bool result = Enum.TryParse(user.Role, true, out AppUserRole val);
+            if (!result)
+            {
+                throw new NotFoundException("Provided role is not valid");
+            }
+            
+            User foundUser = await _userManager.Users.Where(x => x.UserName == user.UserName)
+                                                     .SingleOrDefaultAsync();
+            if (foundUser == null)
+            {
+                throw new NotFoundException("User does not exist");
+            }
+
+            var roles = await _userManager.GetRolesAsync(foundUser);
+            
+            string oldRole = roles.SingleOrDefault();
+            
+            if (string.IsNullOrEmpty(oldRole))
+            {
+                //throw new AppException("User has to have role attached");
+            }
+            
+            foundUser.Email = user.Email;
+            foundUser.UserName = user.UserName;
+            foundUser.FullName = user.FullName;
+
+            string newRole = user.Role;
+            //change user role
+            if (oldRole != newRole)
+            {
+                if(oldRole != null)
+                    await _userManager.RemoveFromRoleAsync(foundUser, oldRole.ToUpperInvariant());
+                await _userManager.AddToRoleAsync(foundUser, newRole.ToUpperInvariant());
+
+                foundUser.Role = newRole;
+            }
+            
+            await _userManager.UpdateAsync(foundUser);
         }
 
         public void Delete(int id)

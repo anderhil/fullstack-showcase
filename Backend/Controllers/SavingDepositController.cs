@@ -37,7 +37,7 @@ namespace SavingsDeposits.Controllers
         [Authorize(Roles="Admin")]
         public IEnumerable<SavingsDepositDTO> GetSavingDeposit()
         {
-            return Enumerable.Empty<SavingsDepositDTO>(); //_context.SavingDeposit;
+            return Enumerable.Empty<SavingsDepositDTO>();
         }  
         
         [HttpGet("{id}")]
@@ -54,7 +54,7 @@ namespace SavingsDeposits.Controllers
         [Authorize(Roles="Admin")]
         public async Task<IActionResult> GetSavingDeposit([FromRoute]int id, [FromRoute]string user)
         {
-            string userId = await this._userService.GetByNameAsync(user);
+            string userId = await _userService.GetByNameAsync(user);
 
             var result = await _savingsService.GetSavingsDepositByOwnerIdAsync(userId, id);
 

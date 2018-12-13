@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SavingsDeposits.Data;
 
 namespace SavingsDeposits.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    partial class AppDataContextModelSnapshot : ModelSnapshot
+    [Migration("20181213125925_UserChanges")]
+    partial class UserChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,9 +45,9 @@ namespace SavingsDeposits.Migrations
                     b.ToTable("AspNetRoles");
 
                     b.HasData(
-                        new { Id = "a465ea12-97e0-4738-a0e5-0bfac34feea6", ConcurrencyStamp = "306e1380-d7a2-41d4-b14b-b0b9cb604c84", Name = "Admin", NormalizedName = "ADMIN" },
-                        new { Id = "4003188e-550e-4332-a114-17bf1ac81fb9", ConcurrencyStamp = "2636d571-edd7-426b-a3d8-3af9a8c8a438", Name = "Manager", NormalizedName = "MANAGER" },
-                        new { Id = "19017164-20bc-4ec9-8324-82a159027a39", ConcurrencyStamp = "c1a52bda-c919-4baf-849d-8f1dc2e14ecf", Name = "User", NormalizedName = "USER" }
+                        new { Id = "2314e8a7-7438-497e-bfa6-50169674365a", ConcurrencyStamp = "a35fc5a5-7360-4a48-a694-5efe2a4385b2", Name = "Admin", NormalizedName = "ADMIN" },
+                        new { Id = "d311282c-652e-4ace-b931-b9cc8175e44d", ConcurrencyStamp = "2537090e-60ac-4963-ae20-cb73b52dd56e", Name = "Manager", NormalizedName = "MANAGER" },
+                        new { Id = "bf1112b6-bac9-4467-9268-c50318941077", ConcurrencyStamp = "c043333e-e940-4fbf-b57c-71529fbfc687", Name = "User", NormalizedName = "USER" }
                     );
                 });
 
@@ -189,10 +191,6 @@ namespace SavingsDeposits.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Owner");
-
-                    b.HasIndex("BankName", "AccountNumber")
-                        .IsUnique()
-                        .HasFilter("[BankName] IS NOT NULL");
 
                     b.ToTable("SavingsDeposits");
                 });

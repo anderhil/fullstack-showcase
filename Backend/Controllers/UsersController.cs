@@ -9,6 +9,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SavingsDeposits.DTOs;
@@ -100,23 +101,38 @@ namespace SavingsDeposits.Controllers
             return Ok(userDtos);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        [HttpGet("{userName}")]
+        public async Task<IActionResult> GetByUserName(string userName)
         {
-            var user =  _userService.GetById(id);
+            ClaimsPrincipal contextUser = HttpContext.User;
+
+            string val = Enum.GetName(typeof(AppUserRole), AppUserRole.Admin);
+            
+            var isAdmin = contextUser.Claims.Any(x => x.Type == ClaimTypes.Role && x.Value == val);
+
+            User user;
+            if (isAdmin)
+            {
+                user =  await _userService.GetByUserName(userName);                
+            }
+            else
+            {
+                user =  await _userService.GetByPrincipal(HttpContext.User);                
+            }
+            
             var userDto = _mapper.Map<UserDto>(user);
             return Ok(userDto);
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Update(string id, [FromBody]UserDto userDto)
+        [HttpPut("{userName}")]
+        [Authorize(Roles="Admin")]
+        public async Task<IActionResult> UpdateAsync(string userName, [FromBody]UserDto userDto)
         {
-            var user = _mapper.Map<User>(userDto);
-            user.Id = id;
+            User user = _mapper.Map<User>(userDto);
 
             try 
             {
-                _userService.Update(user, userDto.Password);
+                await _userService.UpdateAsync(user);
                 return Ok();
             } 
             catch(Exception ex)
