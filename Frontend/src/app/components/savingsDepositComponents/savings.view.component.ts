@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { first } from 'rxjs/operators';
 import {AuthService} from '../../services/auth.service';
 import {SavingsDepositService} from '../../services/savingsDeposits.service';
@@ -16,6 +16,8 @@ export class SavingsViewComponent implements OnInit {
   banksDistinct: Set<string>;
   currentBank: string;
 
+  adminMode = false;
+  userName = '';
   minAmount: number;
   maxAmount: number;
   startDate: Date;
@@ -23,6 +25,7 @@ export class SavingsViewComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService,
     private savingsService: SavingsDepositService
   ) {
@@ -67,11 +70,32 @@ export class SavingsViewComponent implements OnInit {
 
   }
   ngOnInit() {
-    this.loadAllSavings();
+
+    this.route.params.subscribe(params => {
+      const userName = params['user'];
+      this.loadAllSavings(userName);
+    });
+
   }
 
-  private loadAllSavings() {
-    this.savingsService.getAllSavings().pipe(first()).subscribe(deposits => {
+  navigate(savingId) {
+    if (this.adminMode) {
+      this.router.navigate(['savingsEditor', savingId, {'userName': this.userName}]);
+    } else {
+      this.router.navigate(['savingsEditor', savingId]);
+    }
+  }
+
+  private loadAllSavings(user?: string) {
+    let request: Observable<SavingsDeposit[]>;
+    if (!user) {
+      request = this.savingsService.getAllSavings();
+    } else {
+      request = this.savingsService.getAllSavingsByUser(user);
+      this.adminMode = true;
+      this.userName = user;
+    }
+    request.pipe(first()).subscribe(deposits => {
       this.savingsDeposits = deposits;
       this.cachedSavingsDeposits = deposits;
       this.banksDistinct = new Set(deposits.map(x => x.bankName));

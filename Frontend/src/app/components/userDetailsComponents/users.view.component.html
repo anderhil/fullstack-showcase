@@ -1,0 +1,50 @@
+<div>
+  <table class="z-depth-1 table table-bordered">
+  <thead class="thead-dark">
+  <tr>
+    <th scope="col">
+      Username
+    </th>
+    <th scope="col">
+      Full name
+    </th>
+    <th scope="col">
+      Role
+    </th>
+    <th scope="col">
+      Edit link
+    </th>
+    <th scope="col">
+      Delete
+    </th>
+    <th *ngIf="currentUser.role == 'Admin'" scope="col">
+      Savings link
+    </th>
+  </tr>
+  </thead>
+  <tbody style="background-color: white">
+  <tr *ngFor="let user of users">
+    <td>
+      {{user.username}}
+    </td>
+    <td>
+      {{user.fullName}}
+    </td>
+    <td>
+      {{user.role}}%
+    </td>
+    <td *ngIf="currentUser.role == 'Admin'">
+      Edit
+      <!--<a [routerLink]="['/savingsEditor/'+savingsDeposit.id]" class="btn btn-link">Edit</a>-->
+    </td>
+    <td *ngIf="currentUser.role == 'Admin'">
+      Delete<!--<a [routerLink]="['/editDeposit/'+savingsDeposit.id]" class="btn btn-link">Edit</a>-->
+    </td>
+    <td *ngIf="currentUser.role == 'Admin'">
+      <a [routerLink]="['/savingsView/'+user.username]" class="btn btn-link">View user savings</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+

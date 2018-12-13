@@ -10,6 +10,9 @@ import {RegisterComponent} from './components/registerComponent/register.compone
 import {HomeComponent} from './components/homeComponent/home.component';
 import {SavingsViewComponent} from './components/savingsDepositComponents/savings.view.component';
 import {SavingsEditorComponent} from './components/savingsDepositComponents/savings.editor.component';
+import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
+import {UsersViewComponent} from './components/userDetailsComponents/users.view.component';
+import {UsersEditorComponent} from './components/userDetailsComponents/users.editor.component';
 
 @NgModule({
   declarations: [
@@ -18,13 +21,16 @@ import {SavingsEditorComponent} from './components/savingsDepositComponents/savi
     RegisterComponent,
     HomeComponent,
     SavingsViewComponent,
-    SavingsEditorComponent
+    SavingsEditorComponent,
+    UsersViewComponent,
+    UsersEditorComponent
   ],
   imports: [
     BrowserModule,
     routing,
     ReactiveFormsModule,
     HttpClientModule,
+    LoggerModule.forRoot({disableConsoleLogging: false, level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.DEBUG})
   ],
   providers: [],
   bootstrap: [AppComponent]

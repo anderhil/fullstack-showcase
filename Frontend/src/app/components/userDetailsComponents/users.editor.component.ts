@@ -5,12 +5,12 @@ import {AuthService} from '../../services/auth.service';
 import {SavingsDepositService} from '../../services/savingsDeposits.service';
 import {User} from '../../models/user';
 import {SavingsDeposit} from '../../models/savingsDeposit';
-import {Observable, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Location } from '@angular/common';
 
-@Component({templateUrl: 'savings.editor.component.html'})
-export class SavingsEditorComponent implements OnInit {
+@Component({templateUrl: 'users.editor.component.html'})
+export class UsersEditorComponent implements OnInit {
   currentUser: User;
   currentUserSubscription: Subscription;
   savingEditorForm: FormGroup;
@@ -28,13 +28,17 @@ export class SavingsEditorComponent implements OnInit {
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private location: Location
-) {
+  ) {
     this.currentUserSubscription = this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
     });
   }
 
   get formControl() { return this.savingEditorForm.controls; }
+
+  goBack(): void {
+    this.location.back();
+  }
 
   ngOnInit() {
 
@@ -52,23 +56,11 @@ export class SavingsEditorComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       const savingId = params['savingsDeposit'];
-      const user = params['userName'];
-
-      let serverRequest: Observable<SavingsDeposit>;
-
       if (savingId > 0) {
-        // if user is set -> this is admin mode
-        if (user) {
-          serverRequest = this.savingsService.getSavingsDepositByUser(savingId, user);
-        } else {
-          serverRequest = this.savingsService.getSavingsDeposit(savingId);
-        }
-
-        serverRequest.subscribe(x => {
-            this.savingsDeposit = x;
-            this.savingEditorForm.patchValue(this.savingsDeposit);
-          });
-
+        this.savingsService.getSavingsDeposit(savingId).subscribe(x => {
+          this.savingsDeposit = x;
+          this.savingEditorForm.patchValue(this.savingsDeposit);
+        });
       } else {
         this.isCreateView = true;
         this.savingsDeposit.id = 0;
@@ -76,11 +68,6 @@ export class SavingsEditorComponent implements OnInit {
         this.savingEditorForm.patchValue(this.savingsDeposit);
       }
     });
-  }
-
-
-  goBack(): void {
-    this.location.back();
   }
 
   onSubmit() {

@@ -4,5 +4,4 @@ export enum ServerEndpoints {
   GETBYID = 'api/users',
   USERSAVINGS = 'api/savings/all',
   USERSAVINGDEPOSIT = 'api/savings',
-  USERSAVINGDEPOSITNEW = 'api/savings/createNew',
 }

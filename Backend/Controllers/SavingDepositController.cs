@@ -23,11 +23,13 @@ namespace SavingsDeposits.Controllers
     public class SavingDepositController : Controller
     {
         private readonly ISavingsDepositService _savingsService;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public SavingDepositController(ISavingsDepositService service, IMapper mapper)
+        public SavingDepositController(ISavingsDepositService service, IUserService userService, IMapper mapper)
         {
             _savingsService = service;
+            _userService = userService;
             _mapper = mapper;
         }
 
@@ -38,11 +40,21 @@ namespace SavingsDeposits.Controllers
             return Enumerable.Empty<SavingsDepositDTO>(); //_context.SavingDeposit;
         }  
         
-        [HttpGet]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSavingDeposit([FromRoute]int id)
         {
             string userId = GetUserId(HttpContext.User);
+
+            var result = await _savingsService.GetSavingsDepositByOwnerIdAsync(userId, id);
+
+            return Ok(result);
+        }        
+        
+        [HttpGet("{id}/{user}")]
+        [Authorize(Roles="Admin")]
+        public async Task<IActionResult> GetSavingDeposit([FromRoute]int id, [FromRoute]string user)
+        {
+            string userId = await this._userService.GetByNameAsync(user);
 
             var result = await _savingsService.GetSavingsDepositByOwnerIdAsync(userId, id);
 
@@ -59,6 +71,25 @@ namespace SavingsDeposits.Controllers
             
             string userId = GetUserId(HttpContext.User);
 
+            var result = await _savingsService.GetSavingsDepositsByOwnerIdAsync(userId);
+                        
+            var savingsEntity = _mapper.Map<IEnumerable<SavingsDepositDTO>>(result);
+
+            return Ok(savingsEntity);
+        }  
+        
+        [HttpGet]
+        [Route("all/{userName}")]
+        [Authorize(Roles="Admin")]
+        public async Task<IActionResult> GetSavingDepositByUser([FromRoute]string userName)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            string userId = await _userService.GetByNameAsync(userName);
+            
             var result = await _savingsService.GetSavingsDepositsByOwnerIdAsync(userId);
                         
             var savingsEntity = _mapper.Map<IEnumerable<SavingsDepositDTO>>(result);

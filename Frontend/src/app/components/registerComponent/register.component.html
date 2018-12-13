@@ -10,7 +10,7 @@
   </div>
   <div class="form-group">
     <label for="fullName">Full Name</label>
-    <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.firstName.errors }" />
+    <input type="text" formControlName="fullName" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.fullName.errors }" />
     <div *ngIf="submitted && formControl.fullName.errors" class="invalid-feedback">
       <div *ngIf="formControl.fullName.errors.required">Full name required</div>
     </div>
@@ -27,6 +27,7 @@
     <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.password.errors }" />
     <div *ngIf="submitted && formControl.password.errors" class="invalid-feedback">
       <div *ngIf="formControl.password.errors.required">Password required</div>
+      <div *ngIf="formControl.password.errors.passwordError">{{formControl.password.errors.passwordError}}</div>
     </div>
   </div>
   <div class="form-group">
@@ -37,10 +38,12 @@
     <div *ngIf="submitted && formControl.role.errors" class="invalid-feedback">
       <div *ngIf="formControl.role.errors.required">Role required</div>
     </div>
-
   </div>
   <div class="form-group">
     <button [disabled]="loading" class="btn btn-primary">Register</button>
-    <a [routerLink]="['/login']" class="btn btn-link">Cancel</a>
+    <button (click)="goBack()" class="btn btn-link">Cancel</button>
+    <div *ngIf="submitted && isError" class="invalid-feedback" [ngClass]="{'error':isError}">
+      <div>{{errorMessage}}</div>
+    </div>
   </div>
 </form>

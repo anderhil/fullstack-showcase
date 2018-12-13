@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using SavingsDeposits.Data;
@@ -17,9 +18,10 @@ namespace SavingsDeposits.Services
     public interface IUserService
     {
         Task<User> Authenticate(string userName, string password);
-        IEnumerable<User> GetAll();
+        Task<IEnumerable<User>> GetAllAsync();
         User GetById(int id);
-        Task<IdentityResult> Create(User user, string password, AppUserRole role = AppUserRole.User);
+        Task<string> GetByNameAsync(string userName);
+        Task<IdentityResult> CreateAsync(User user, string password, AppUserRole role = AppUserRole.User);
         void Update(User user, string password = null);
         void Delete(int id);
     }  
@@ -51,9 +53,9 @@ namespace SavingsDeposits.Services
             throw new AppException("Cannot login");
         }
 
-        public IEnumerable<User> GetAll()
+        public async Task<IEnumerable<User>> GetAllAsync()
         {
-            throw new System.NotImplementedException();
+            return  await _userManager.Users.ToListAsync();
         }
 
         public User GetById(int id)
@@ -61,28 +63,36 @@ namespace SavingsDeposits.Services
             throw new System.NotImplementedException();
         }
 
-        public async Task<IdentityResult> Create(User user, string password, AppUserRole role = AppUserRole.User)
+        public async Task<string> GetByNameAsync(string userName)
+        {
+            var foundUser = await _userManager.FindByNameAsync(userName);
+            if (foundUser == null) throw new NotFoundException("User not found");
+
+            return foundUser.Id;
+        }
+
+        public async Task<IdentityResult> CreateAsync(User user, string password, AppUserRole role = AppUserRole.User)
         {
             var foundUser = await _userManager.FindByNameAsync(user.UserName);
-            if (foundUser == null)
-            {                    
-                user.Id = Guid.NewGuid().ToString();
-                var result = await _userManager.CreateAsync(user, password);
-                if (result.Succeeded)
+            
+            if (foundUser != null) throw new NotFoundException("User already registered");
+            
+            user.Id = Guid.NewGuid().ToString();
+            var result = await _userManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+                try
                 {
-                    try
-                    {
-                        return await _userManager.AddToRoleAsync(user, Enum.GetName(typeof(AppUserRole), role));                
-                    }
-                    catch(Exception e)
-                    {
-                        var res = await _userManager.DeleteAsync(user);                        
-                    }
+                    return await _userManager.AddToRoleAsync(user, Enum.GetName(typeof(AppUserRole), role));                
                 }
-                else
+                catch(Exception e)
                 {
-                    throw new AppException($"Something went wrong: {result.Errors.First().Description}");                    
+                    var res = await _userManager.DeleteAsync(user);                        
                 }
+            }
+            else
+            {
+                throw new AppException($"Something went wrong: {result.Errors.First().Description}");                    
             }
             throw new NotFoundException("User already registered");                    
 

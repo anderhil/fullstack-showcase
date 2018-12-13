@@ -41,4 +41,25 @@ export class AppHttpClient {
     return this.http.get<T>(path, {headers: this.headers()});
   }
 
+  getWithParams<T>(endpoint: ServerEndpoints, pathParam: any, qParams?: HttpParams | {
+    [param: string]: string | string[];
+  }): Observable<T> {
+    let path = this.addBase(endpoint) ;
+    if (pathParam) {
+      path = path + '/' + pathParam;
+    }
+    return this.http.get<T>(path, {headers: this.headers(), params: qParams});
+  }
+
+  getWithTwoParams<T>(endpoint: ServerEndpoints, pathParam: any, pathParam2: any): Observable<T> {
+    let path = this.addBase(endpoint) ;
+    if (pathParam) {
+      path = path + '/' + pathParam;
+    }
+    if (pathParam2) {
+      path = path + '/' + pathParam2;
+    }
+    return this.http.get<T>(path, {headers: this.headers()});
+  }
+
 }

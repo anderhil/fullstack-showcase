@@ -71,7 +71,7 @@ namespace SavingsDeposits.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-            return Ok(new{user.UserName,tokenString});
+            return Ok(new{user.UserName,tokenString, role = mainRole});
         }
 
         [AllowAnonymous]
@@ -79,7 +79,7 @@ namespace SavingsDeposits.Controllers
         public async Task<IActionResult> Register([FromBody]UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
-            var info = await _userService.Create(user, userDto.Password, Enum.Parse<AppUserRole>(userDto.Role, true));
+            var info = await _userService.CreateAsync(user, userDto.Password, Enum.Parse<AppUserRole>(userDto.Role, true));
           
             if(info.Succeeded)
             {
@@ -92,9 +92,10 @@ namespace SavingsDeposits.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        [Authorize(Roles="Admin")]
+        public async Task<IActionResult> GetAllAsync()
         {
-            var users =  _userService.GetAll();
+            var users =  await _userService.GetAllAsync();
             var userDtos = _mapper.Map<IList<UserDto>>(users);
             return Ok(userDtos);
         }

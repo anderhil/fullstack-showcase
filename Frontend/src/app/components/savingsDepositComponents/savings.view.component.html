@@ -91,7 +91,7 @@
       {{savingsDeposit.endDate}}
     </td>
     <td>
-      <a [routerLink]="['/savingsEditor/'+savingsDeposit.id]" class="btn btn-link">Edit</a>
+      <button (click)="navigate(savingsDeposit.id)" class="btn btn-link">Edit</button>
     </td>
     <td>
       Delete<!--<a [routerLink]="['/editDeposit/'+savingsDeposit.id]" class="btn btn-link">Edit</a>-->
