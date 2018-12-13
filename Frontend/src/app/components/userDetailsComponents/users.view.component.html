@@ -31,11 +31,10 @@
       {{user.fullName}}
     </td>
     <td>
-      {{user.role}}%
+      {{user.role}}
     </td>
     <td *ngIf="currentUser.role == 'Admin'">
-      Edit
-      <!--<a [routerLink]="['/savingsEditor/'+savingsDeposit.id]" class="btn btn-link">Edit</a>-->
+      <a [routerLink]="['/userEdit/'+user.username]" class="btn btn-link">Edit</a>
     </td>
     <td *ngIf="currentUser.role == 'Admin'">
       Delete<!--<a [routerLink]="['/editDeposit/'+savingsDeposit.id]" class="btn btn-link">Edit</a>-->

@@ -12,16 +12,20 @@ export class UserService extends BaseService {
     super(http);
   }
 
-  getById(id: number) {
-    return this.extendedHttp.get(ServerEndpoints.GETBYID, id);
+  getByUserName(userName: string) {
+    return this.extendedHttp.get<User>(ServerEndpoints.USERSAPI, userName);
   }
 
   getAll() {
-    return this.extendedHttp.get<User[]>(ServerEndpoints.GETBYID);
+    return this.extendedHttp.get<User[]>(ServerEndpoints.USERSAPI);
   }
 
   register(user: User) {
     return this.extendedHttp.post(ServerEndpoints.REGISTER, user);
+  }
+
+  update(user: User) {
+    return this.extendedHttp.put(ServerEndpoints.USERSAPI, user, user.username);
   }
 
 }

@@ -8,7 +8,7 @@ import {SavingsDeposit} from '../../models/savingsDeposit';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {UserService} from '../../services/user.service';
 
-@Component({templateUrl: 'users.view.component.html', styleUrls: ['./users.view.component.css']})
+@Component({templateUrl: 'users.view.component.html', styleUrls: ['./user.edit.component.css']})
 export class UsersViewComponent implements OnInit {
   currentUser: User;
   currentUserSubscription: Subscription;

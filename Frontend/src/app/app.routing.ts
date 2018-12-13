@@ -7,6 +7,7 @@ import {AuthenticationGuard} from './guards/AuthenticationGuard';
 import {SavingsViewComponent} from './components/savingsDepositComponents/savings.view.component';
 import {SavingsEditorComponent} from './components/savingsDepositComponents/savings.editor.component';
 import {UsersViewComponent} from './components/userDetailsComponents/users.view.component';
+import {UserEditComponent} from './components/userDetailsComponents/user.edit.component';
 
 const appRoutes: Routes = [
    { path: '', component: HomeComponent, canActivate: [AuthenticationGuard] },
@@ -17,6 +18,7 @@ const appRoutes: Routes = [
     children: [  { path: 'user/:userName', component: SavingsEditorComponent}] },
   { path: 'usersView', component: UsersViewComponent },
   { path: 'savingsView/:user', component: SavingsViewComponent },
+  { path: 'userEdit/:user', component: UserEditComponent },
 
 
 
