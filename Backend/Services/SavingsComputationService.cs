@@ -30,8 +30,8 @@ namespace SavingsDeposits.Services
         public DepositHistory PerformDepositCalculation(SavingsDeposit savingsDeposit)
         {
             DepositHistory depositHistory = new DepositHistory();
-
-            decimal dailyCalculatedAmount = savingsDeposit.InitialAmount * savingsDeposit.YearlyInterestPercentage /
+            
+            decimal dailyCalculatedAmount = savingsDeposit.AccountBalance * savingsDeposit.YearlyInterestPercentage /
                                             DaysInYear / 100m;
             decimal profitTax = 0;
             if (dailyCalculatedAmount > 0)
