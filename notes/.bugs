@@ -1,6 +1,7 @@
 [!] when changing user role -> cannot change itself when admin
 [!] add user redirects to savings deposists view
 [!] disable editing intital amount/account/bank name in ui or etc as well? requirement wasn't clear enough
+[!] better rest api for admin
 [!] add back button to screens - different browser behavior
 
 [?] disable editing profit and tax? however it is possible to do in case of any change, next calculation will just calculate another time

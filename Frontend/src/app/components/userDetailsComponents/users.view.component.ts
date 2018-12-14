@@ -8,6 +8,7 @@ import {SavingsDeposit} from '../../models/savingsDeposit';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {UserService} from '../../services/user.service';
 import {NotifyService} from '../../services/notify.service';
+import { Location } from '@angular/common';
 
 @Component({templateUrl: 'users.view.component.html', styleUrls: ['./user.edit.component.css']})
 export class UsersViewComponent implements OnInit {
@@ -20,7 +21,8 @@ export class UsersViewComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private userService: UserService,
-    private notifier: NotifyService
+    private notifier: NotifyService,
+    private location: Location
   ) {
     this.currentUserSubscription = this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
@@ -42,6 +44,10 @@ export class UsersViewComponent implements OnInit {
           this.users.splice(index, 1);
           }, error => {this.notifier.error(error);
     });
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 
   navigateTo(userName: string) {

@@ -7,6 +7,7 @@ import {User} from '../../models/user';
 import {SavingsDeposit} from '../../models/savingsDeposit';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {NotifyService} from '../../services/notify.service';
+import {Location} from '@angular/common';
 
 @Component({templateUrl: 'savings.view.component.html', styleUrls: ['./savings.view.component.css']})
 export class SavingsViewComponent implements OnInit {
@@ -29,7 +30,9 @@ export class SavingsViewComponent implements OnInit {
     private route: ActivatedRoute,
     private authService: AuthService,
     private savingsService: SavingsDepositService,
-    private notifier: NotifyService
+    private notifier: NotifyService,
+    private location: Location
+
   ) {
     this.currentUserSubscription = this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
@@ -44,7 +47,9 @@ export class SavingsViewComponent implements OnInit {
         this.savingsDeposits = this.cachedSavingsDeposits.filter((item) => item.bankName === filterVal);
     }
   }
-
+  goBack(): void {
+    this.location.back();
+  }
   filter() {
     this.savingsDeposits = this.cachedSavingsDeposits;
     this.filterBanks(this.currentBank);
