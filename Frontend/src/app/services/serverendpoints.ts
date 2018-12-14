@@ -4,4 +4,7 @@ export enum ServerEndpoints {
   USERSAPI = 'api/users',
   USERSAVINGSAPIALL = 'api/savings/all',
   USERSAVINGDSAPI = 'api/savings',
+
+  REPORT = 'api/report',
+
 }

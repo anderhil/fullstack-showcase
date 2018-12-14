@@ -23,10 +23,4 @@ namespace SavingsDeposits.Entities
 
         public decimal AccountBalance => InitialAmount + CurrentProfitAfterTax;
     }
-
-
-    //A saving deposit is identified by a bank name,
-        //account number, an initial amount saved (currency in USD), start date, end date,
-        //interest percentage per year and taxes percentage.
-    
 }

@@ -87,6 +87,7 @@ namespace SavingsDeposits
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISavingsDepositService, SavingsDepositService>();
+            services.AddScoped<IReportService, ReportService>();
             services.AddSingleton<IHostedService, DailySavingsComputationService>();
             
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)

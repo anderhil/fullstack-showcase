@@ -16,6 +16,7 @@ namespace SavingsDeposits.Data
 
             public DbSet<SavingsDeposit> SavingsDeposits { get; set; }
             public DbSet<DepositHistory> DepositsHistory { get; set; }
+            public DbSet<ReportData> Reports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -26,6 +27,7 @@ namespace SavingsDeposits.Data
             }
 
              builder.Entity<SavingsDeposit>().HasOne<User>().WithMany().HasForeignKey(s => s.Owner);
+             builder.Entity<ReportData>().HasOne<User>().WithMany().HasForeignKey(s => s.UserId);
 
              builder.Entity<SavingsDeposit>().HasIndex(x => new {x.BankName, x.AccountNumber}).IsUnique();
             

@@ -19,7 +19,7 @@ namespace SavingsDeposits.Controllers
     [Authorize]
     [ApiController]
     [Produces("application/json")]
-    [Route("api/Savings")]
+    [Route("api/savings")]
     public class SavingDepositController : Controller
     {
         private readonly ISavingsDepositService _savingsService;

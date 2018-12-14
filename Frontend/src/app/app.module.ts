@@ -13,6 +13,7 @@ import {SavingsEditorComponent} from './components/savingsDepositComponents/savi
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
 import {UsersViewComponent} from './components/userDetailsComponents/users.view.component';
 import {UserEditComponent} from './components/userDetailsComponents/user.edit.component';
+import {ReportComponent} from './components/reportComponent/report.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import {UserEditComponent} from './components/userDetailsComponents/user.edit.co
     SavingsViewComponent,
     SavingsEditorComponent,
     UsersViewComponent,
-    UserEditComponent
+    UserEditComponent,
+    ReportComponent
   ],
   imports: [
     BrowserModule,

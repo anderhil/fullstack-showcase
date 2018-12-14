@@ -11,6 +11,8 @@ namespace SavingsDeposits.Entities
         public DateTime CalculationDate { get; set; }
         
         public decimal TotalProfitAfterTax { get; set; }
+        public decimal TotalProfitBeforeTax { get; set; }
+        public decimal TotalProfitTax { get; set; }
 
         public decimal ProfitTax { get; set; }
         public decimal ProfitBeforeTax { get; set; }
