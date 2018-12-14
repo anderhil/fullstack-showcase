@@ -1,0 +1,25 @@
+.red {
+  color: red;
+}
+.green {
+  color: green;
+}
+.depositSummaryLabel{
+  font-style: italic;
+  font-weight: lighter;
+}
+.summary{
+  font-weight: bold;
+  text-align: right
+}
+
+.captionLabel{
+  font-weight: bold;
+}
+.captionText{
+margin-left: 10px;
+}
+
+.leftForm {
+  border-right: solid 1px gray;
+}

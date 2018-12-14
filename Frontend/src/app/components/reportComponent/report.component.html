@@ -1,23 +1,103 @@
-<h2>Login</h2>
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+<div class="container row">
+  <form class="col-sm-3 leftForm" [formGroup]="reportForm">
+    <div class="form-group">
+      <label for="startDate">Start date</label>
+      <input type="date" formControlName="startDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.startDate.errors }" />
+      <div *ngIf="submitted && formControl.startDate.errors" class="invalid-feedback">
+        <div *ngIf="formControl.startDate.errors.required">Username required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="endDate">End date</label>
+      <input type="date" formControlName="endDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.endDate.errors }" />
+      <div *ngIf="submitted && formControl.endDate.errors" class="invalid-feedback">
+        <div *ngIf="formControl.endDate.errors.required">Username required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <button (click)="genereateReport()" class="btn btn-primary">Create report</button>
+    </div>
+  </form>
+  <div *ngIf="dateRangeReport"  class="col-sm-8 offset-sm-1" >
+    <div class="container">
+      <div>
+        <label class="captionLabel">Username:</label>
+        <label class="captionText"> {{dateRangeReport.userName}}</label>
+      </div>
+      <div>
+        <label class="captionLabel">Full name:</label>
+        <label class="captionText"> {{dateRangeReport.fullName}}</label>
+      </div>
+      <div>
+        <label class="captionLabel">Email:</label>
+        <label class="captionText"> {{dateRangeReport.email}}</label>
+      </div>
+    </div>
+    <br/>
 
-  <button (click)="genereateReport()" class="btn btn-primary">Report</button>
-  <!--<div class="form-group">-->
-    <!--<label for="username">Username</label>-->
-    <!--<input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.username.errors }" />-->
-    <!--<div *ngIf="submitted && formControl.username.errors" class="invalid-feedback">-->
-      <!--<div *ngIf="formControl.username.errors.required">Username required</div>-->
-    <!--</div>-->
-  <!--</div>-->
-  <!--<div class="form-group">-->
-    <!--<label for="password">Password</label>-->
-    <!--<input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControl.password.errors }" />-->
-    <!--<div *ngIf="submitted && formControl.password.errors" class="invalid-feedback">-->
-      <!--<div *ngIf="formControl.password.errors.required">Password required</div>-->
-    <!--</div>-->
-  <!--</div>-->
-  <!--<div class="form-group">-->
-    <!--<button [disabled]="loading" class="btn btn-primary">Login</button>-->
-    <!--<a [routerLink]="['/register']" class="btn btn-link">Register</a>-->
-  <!--</div>-->
-</form>
+    <div style="margin-left: 10px">
+      <label>Report is generated for the period from {{dateRangeReport.startDate}} till {{dateRangeReport.endDate}}</label>
+    </div>
+
+    <br/>
+    <table class="z-depth-1 table table-stripped">
+      <thead>
+        <tr>
+          <th>Bank name</th>
+          <th>Initial Amount</th>
+          <th>Account</th>
+          <th>Interest rate</th>
+          <th>Profit tax</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let depositInfo of dateRangeReport.depositReports">
+
+        <tr>
+          <td>{{depositInfo.bankName}}</td>
+          <td>{{depositInfo.accountNumber}}</td>
+          <td>${{depositInfo.initialAmount}}</td>
+          <td>{{depositInfo.interest}}%</td>
+          <td>{{depositInfo.profitTax}}%</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="text-align: right"></td>
+          <td class="depositSummaryLabel">Before tax</td>
+          <td class="depositSummaryLabel">Tax</td>
+          <td class="depositSummaryLabel">Net income</td>
+        </tr>
+        <tr>
+          <td colspan="2" class="summary">Deposit summary</td>
+          <td *ngIf="depositInfo.totalProfitBeforeTax>=0" class="green">{{depositInfo.totalProfitBeforeTax}}</td>
+          <td *ngIf="depositInfo.totalProfitBeforeTax<0" class="red">{{depositInfo.totalProfitBeforeTax}}</td>
+
+          <td *ngIf="depositInfo.totalProfitTax>0" class="red">-{{depositInfo.totalProfitTax}}</td>
+          <td *ngIf="depositInfo.totalProfitTax<=0" class="green">0</td>
+
+          <td *ngIf="depositInfo.totalProfitAfterTax>=0" class="green">{{depositInfo.totalProfitAfterTax}}</td>
+          <td *ngIf="depositInfo.totalProfitAfterTax<0" class="red"> {{depositInfo.totalProfitAfterTax}}</td>
+        </tr>
+        </tbody>
+      <tbody>
+      <tr>
+        <td colspan="2" style="text-align: right"></td>
+        <td class="depositSummaryLabel">Total deposits profit</td>
+        <td class="depositSummaryLabel">Total taxes paid</td>
+        <td class="depositSummaryLabel">Total net income</td>
+      </tr>
+        <tr>
+          <td colspan="2" class="summary">Total deposits summary</td>
+          <td *ngIf="dateRangeReport.depositsProfitBeforeTax>=0" class="green">{{dateRangeReport.depositsProfitBeforeTax}}</td>
+          <td *ngIf="dateRangeReport.depositsProfitBeforeTax<0" class="red"> {{dateRangeReport.depositsProfitBeforeTax}}</td>
+
+          <td *ngIf="dateRangeReport.depositsProfitTax>0" class="red">-{{dateRangeReport.depositsProfitTax}}</td>
+          <td *ngIf="dateRangeReport.depositsProfitTax<=0" class="green">0</td>
+
+          <td *ngIf="dateRangeReport.depositsProfitAfterTax>=0" class="green">{{dateRangeReport.depositsProfitAfterTax}}</td>
+          <td *ngIf="dateRangeReport.depositsProfitAfterTax<0" class="red"> {{dateRangeReport.depositsProfitAfterTax}}</td>
+
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>

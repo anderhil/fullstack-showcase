@@ -6,6 +6,7 @@ import {map} from 'rxjs/operators';
 import {User} from '../models/user';
 import {BaseService} from './base.service';
 import {ServerEndpoints} from './serverendpoints';
+import {DateRangeReport} from '../models/dateRangeReport';
 
 @Injectable({ providedIn: 'root' })
 export class ReportingService extends BaseService {
@@ -16,13 +17,8 @@ export class ReportingService extends BaseService {
 
   generateReport(startDate: Date, endDate: Date) {
 
-    const params = new HttpParams();
-    params.append('startDate', startDate.toJSON());
-    params.append('endDate', endDate.toJSON());
-    return this.extendedHttp.getWithParams<any>(ServerEndpoints.REPORT, '', params)
-      .subscribe(x => {
-          console.log(x);
-      });
+    const params = new HttpParams().set('startDate', startDate.toString()).set('endDate', endDate.toString());
+    return this.extendedHttp.getWithParams<DateRangeReport>(ServerEndpoints.REPORT, '', params);
   }
 
   logout() {

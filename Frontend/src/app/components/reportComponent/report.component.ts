@@ -1,17 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import {Router, ActivatedRoute, Data} from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import {AuthService} from '../../services/auth.service';
 import {ReportingService} from '../../services/reporting.service';
+import {DateRangeReport} from '../../models/dateRangeReport';
+import {DepositReport} from '../../models/depositReport';
 
 
-@Component({templateUrl: 'report.component.html'})
+@Component({templateUrl: 'report.component.html', styleUrls: ['report.component.css']})
 export class ReportComponent implements OnInit {
-  loginForm: FormGroup;
+  reportForm: FormGroup;
   loading = false;
   submitted = false;
   returnUrl: string;
+
+
+  startDate: Date;
+  endDate: Date;
+
+  dateRangeReport: DateRangeReport;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -23,36 +31,34 @@ export class ReportComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loginForm = this.formBuilder.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+    this.reportForm = this.formBuilder.group({
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required]
     });
 
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   genereateReport() {
-    this.reportingService.generateReport(new Date(), new Date(2040, 1, 1, 23));
+    this.startDate = this.formControl.startDate.value;
+    this.endDate = this.formControl.endDate.value;
+    this.reportingService.generateReport(this.startDate, this.endDate)
+      .subscribe(data => {
+        // const obj: DateRangeReport = Object.setPrototypeOf(data, DateRangeReport.prototype);
+        // obj.depositReports = Object.setPrototypeOf(data.depositReports, DepositReport.prototype);
+        this.dateRangeReport = data;
+    });
   }
 
-  get formControl() { return this.loginForm.controls; }
+  get formControl() { return this.reportForm.controls; }
 
   onSubmit() {
     this.submitted = true;
 
-    if (this.loginForm.invalid) {
+    if (this.reportForm.invalid) {
       return;
     }
 
     this.loading = true;
-    this.authService.login(this.formControl.username.value, this.formControl.password.value)
-      .pipe(first())
-      .subscribe(
-        data => {
-          this.router.navigate([this.returnUrl]);
-        },
-        error => {
-          this.loading = false;
-        });
   }
 }
