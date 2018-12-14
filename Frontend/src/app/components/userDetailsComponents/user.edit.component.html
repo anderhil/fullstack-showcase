@@ -24,7 +24,7 @@
   </div>
   <div class="form-group">
     <label for="role">User role</label>
-    <select [value]="user.role.toLowerCase()" formControlName="role" class="form-control" required>
+    <select [value]="userRole" formControlName="role" class="form-control" required>
       <option *ngFor="let role of roles" [value]="role">{{role}}</option>
     </select>
     <div *ngIf="submitted && formControl.role.errors" class="invalid-feedback">

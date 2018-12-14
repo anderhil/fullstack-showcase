@@ -48,6 +48,10 @@ export class UserEditComponent implements OnInit {
     return role === this.user.role.toLowerCase();
   }
 
+  get userRole() {
+    return this.user ? this.user.role ? this.user.role.toLowerCase() : '' : '';
+  }
+
   get formControl() { return this.registerForm.controls; }
 
   get isError(): boolean {
