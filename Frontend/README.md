@@ -1,27 +1,21 @@
 # Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.1.2.
+Frontend was developed using Angular 7.1.2
 
-## Development server
+Project is structured with separate communication services, models, components, etc.
+Bootstrap styles were used for the application with some custom tweaks
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Using the UI is quite straightforward, on Home screen there are buttons which lead to the data tables,
+from where user can edit the data
 
-## Code scaffolding
+Showing of data was based on the simple table, as there were no requirements for something more advanced
+Actions as links on the table, different users can access different actions 
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Backend
 
-## Build
+ASP.NET Core 2.1 using EF Core for working with data
+SQL Server as database
+JWT Tokens for AUTH
+ASP.NET Roles for roles
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+API is quite simple, I implemented it on go, I have in mind some refactoring I would do, but not for the current stage of the project
