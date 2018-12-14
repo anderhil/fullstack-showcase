@@ -6,7 +6,7 @@ namespace SavingsDeposits.Helpers
 {
     public abstract class HostedService : IHostedService
     {
-        // Example untested base class code kindly provided by David Fowler: https://gist.github.com/davidfowl/a7dd5064d9dcf35b6eae1a7953d615e3
+        // base class code provided by David Fowler: https://gist.github.com/davidfowl/a7dd5064d9dcf35b6eae1a7953d615e3
 
         private Task _executingTask;
         private CancellationTokenSource _cts;

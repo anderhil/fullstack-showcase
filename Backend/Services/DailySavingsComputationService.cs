@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SavingsDeposits.Data;
 using SavingsDeposits.Entities;
 using SavingsDeposits.Helpers;
@@ -33,13 +34,18 @@ namespace SavingsDeposits.Services
             {
                 using (var scope = _scopeFactory.CreateScope())
                 {
+                    var logger = scope.ServiceProvider.GetService<ILogger<DailySavingsComputationService>>();
                     AppDataContext appDataContext = scope.ServiceProvider.GetRequiredService<AppDataContext>();
                     
                     SavingsComputationService computationService = new SavingsComputationService(appDataContext);
                     
-                    await computationService.RunCalculationForAllUsersAsync(DateTime.Now);                    
+                    logger.LogInformation("Started computation of deposits");
+                    
+                    await computationService.RunCalculationForAllUsersAsync(DateTime.Now);   
+                    
+                    logger.LogInformation("Finished computation");
+
                 }
-                
                 await Task.Delay(CalculateNextRun(), cancellationToken);
             }
         }

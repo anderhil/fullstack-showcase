@@ -85,7 +85,7 @@ namespace SavingsDeposits
          
             ConfigureJwt(services);
             services.AddCors();
-
+            services.AddLogging(x=>x.AddConsole());
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISavingsDepositService, SavingsDepositService>();
             services.AddScoped<IReportService, ReportService>();
@@ -136,24 +136,27 @@ namespace SavingsDeposits
                 var res = userManager.CreateAsync(root, "Admin1@#").Result;
                 res = userManager.AddToRoleAsync(root, "ADMIN").Result;
             }
-            else
-            {
-                try
+
+            
+             if (!context.SavingsDeposits.Any(x => x.Owner == "myId"))
                 {
+                    try
+                    {
+
                     context.SavingsDeposits.AddRange(TestData());
                     context.SaveChanges();
-                
+            
                     SavingsComputationService computationService = new SavingsComputationService(context);
                     for (int i = 0; i < 7; i++)
                     {
                         computationService.RunCalculationForAllUsersAsync(DateTime.Now.AddDays(i)).Wait();
                     }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }               
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }               
-            }
         }
         
         private SavingsDeposit[] TestData()

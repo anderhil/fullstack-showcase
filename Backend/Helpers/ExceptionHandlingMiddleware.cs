@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace SavingsDeposits.Helpers
@@ -15,7 +16,7 @@ namespace SavingsDeposits.Helpers
             this.next = next;
         }
 
-        public async Task Invoke(HttpContext context /* other dependencies */)
+        public async Task Invoke(HttpContext context, ILogger<ExceptionHandlingMiddleware> logger)
         {
             try
             {
@@ -23,6 +24,7 @@ namespace SavingsDeposits.Helpers
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, "Intercepted error");
                 await HandleExceptionAsync(context, ex);
             }
         }

@@ -80,7 +80,7 @@ namespace SavingsDeposits.Controllers
         public async Task<IActionResult> Register([FromBody]UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
-            var info = await _userService.CreateAsync(user, userDto.Password, Enum.Parse<AppUserRole>(userDto.Role, true));
+            var info = await _userService.CreateAsync(user, userDto.Password);
           
             if(info.Succeeded)
             {
