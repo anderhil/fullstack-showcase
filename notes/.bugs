@@ -1,5 +1,6 @@
 [!] when changing user role -> cannot change itself when admin
 [!] better rest api for admin
+[!] weird issue with jumping from user edit to home screen, cannot find cause....
 
 [?] disable editing intital amount/account/bank name in ui or etc as well? requirement wasn't clear enough
 

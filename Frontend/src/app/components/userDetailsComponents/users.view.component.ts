@@ -15,7 +15,6 @@ export class UsersViewComponent implements OnInit {
   currentUser: User;
   currentUserSubscription: Subscription;
   users: User[] = [];
-  cachedSavingsDeposits: User[] = [];
 
   constructor(
     private router: Router,
