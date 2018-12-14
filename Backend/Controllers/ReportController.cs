@@ -37,7 +37,7 @@ namespace SavingsDeposits.Controllers
 
             var result = await _reportService.GenerateReport(userId, startDate, endDate);
 
-            return new JsonResult(result.JsonObject);
+            return Content(result.JsonObject, "application/json");
         }        
     }
     

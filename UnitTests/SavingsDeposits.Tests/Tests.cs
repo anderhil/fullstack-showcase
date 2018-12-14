@@ -20,13 +20,11 @@ namespace SavingsDeposits.Tests
 
         public ComputationTest()
         {
-            var messages = new List<string>();
-            Action<string> verbose = (text) => { messages.Add(text); };
-
-
             var options = new DbContextOptionsBuilder<AppDataContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
+            
+            
 
             _context = new AppDataContext(options);
 
@@ -238,7 +236,7 @@ namespace SavingsDeposits.Tests
             ReportService reportService = new ReportService(_context);
 
             var report = reportService.GenerateReport(_user.Id, today, today.AddDays(7)).Result;
-
+           
         }
     }
 }

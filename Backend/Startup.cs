@@ -17,6 +17,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using SavingsDeposits.Data;
 using SavingsDeposits.Entities;
 using SavingsDeposits.Helpers;
@@ -89,14 +90,18 @@ namespace SavingsDeposits
             services.AddScoped<ISavingsDepositService, SavingsDepositService>();
             services.AddScoped<IReportService, ReportService>();
             services.AddSingleton<IHostedService, DailySavingsComputationService>();
-            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(x=>x.SerializerSettings.DateFormatString = "yyyy-MM-dd");
+                .AddJsonOptions(x=>
+                {
+                    x.SerializerSettings.DateFormatString = "yyyy-MM-dd";
+                    JsonConvert.DefaultSettings = () => x.SerializerSettings;
+                   
+                });
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, AppDataContext context, UserManager<User> userManager)
         {
             if (env.IsDevelopment())
             {
@@ -112,6 +117,86 @@ namespace SavingsDeposits
 //            app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMvc();
+            
+            SeedWithData(context, userManager);
         }
+
+        private void SeedWithData(AppDataContext context, UserManager<User> userManager)
+        {
+            var root = userManager.Users.FirstOrDefault(x => x.UserName == "admin");
+            if (root == null)
+            {
+                root = new User
+                {
+                    Id = "myId",
+                    UserName = "admin",
+                    Email = "root@root.com",
+                    FullName = "Great Root"
+                };
+                var res = userManager.CreateAsync(root, "Admin1@#").Result;
+                res = userManager.AddToRoleAsync(root, "ADMIN").Result;
+            }
+            else
+            {
+                try
+                {
+                    context.SavingsDeposits.AddRange(TestData());
+                    context.SaveChanges();
+                
+                    SavingsComputationService computationService = new SavingsComputationService(context);
+                    for (int i = 0; i < 7; i++)
+                    {
+                        computationService.RunCalculationForAllUsersAsync(DateTime.Now.AddDays(i)).Wait();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }               
+            }
+        }
+        
+        private SavingsDeposit[] TestData()
+        {
+            SavingsDeposit deposit = new SavingsDeposit
+            {
+                BankName = "MyDepositBank",
+                AccountNumber = 777777777,
+                Owner = "myId",
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddDays(7),
+                InitialAmount = 100_000_000,
+                TaxPercentage = 20,
+                YearlyInterestPercentage = 5
+            };            
+            
+            
+            SavingsDeposit depositSmall = new SavingsDeposit
+            {
+                BankName = "MySmallDepositBank",
+                AccountNumber = 333333,
+                Owner = "myId",
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddDays(7),
+                InitialAmount = 1000,
+                TaxPercentage = 10,
+                YearlyInterestPercentage = 30
+            };
+
+            SavingsDeposit credit = new SavingsDeposit
+            {
+                BankName = "MyCreditBank",
+                AccountNumber = 111111,
+                Owner = "myId",
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddDays(7),
+                InitialAmount = 10_000_000,
+                TaxPercentage = 0,
+                YearlyInterestPercentage = -10
+            };
+
+            return new[] { deposit, credit, depositSmall};
+        }
+        
     }
 }

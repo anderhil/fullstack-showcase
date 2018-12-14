@@ -32,7 +32,7 @@ namespace SavingsDeposits.Data
              builder.Entity<SavingsDeposit>().HasIndex(x => new {x.BankName, x.AccountNumber}).IsUnique();
             
              builder.Entity<DepositHistory>().HasOne<SavingsDeposit>().WithMany().HasForeignKey(s => s.SavingsDepositId);
-            
         }
+
     }
 }

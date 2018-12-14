@@ -14,7 +14,10 @@ namespace SavingsDeposits.Services
     public class DepositReport
     {
         public string BankName { get; set; }
-        public string AccountNumber { get; set; }
+        public decimal AccountNumber { get; set; }
+        public decimal InitialAmount { get; set; }
+        public decimal ProfitTax { get; set; }
+        public decimal Interest { get; set; }
         
         public decimal TotalProfitBeforeTax { get; set; }
         public decimal TotalProfitAfterTax { get; set; }
@@ -38,9 +41,9 @@ namespace SavingsDeposits.Services
                 {
                     foreach (DepositReport report in value)
                     {
-                        DepositsSummaryProfitTax += report.TotalProfitTax;
-                        DepositsSummaryProfitAfterTax += report.TotalProfitAfterTax;
-                        DepositsSummaryProfitBeforeTax += report.TotalProfitBeforeTax;
+                        DepositsProfitTax += report.TotalProfitTax;
+                        DepositsProfitAfterTax += report.TotalProfitAfterTax;
+                        DepositsProfitBeforeTax += report.TotalProfitBeforeTax;
                     }
                 }
 
@@ -48,13 +51,13 @@ namespace SavingsDeposits.Services
             }
         }
 
-        public decimal DepositsSummaryProfitBeforeTax { get; set; }
-        public decimal DepositsSummaryProfitAfterTax { get; set; }
-        public decimal DepositsSummaryProfitTax { get; set; }
+        public decimal DepositsProfitBeforeTax { get; set; }
+        public decimal DepositsProfitAfterTax { get; set; }
+        public decimal DepositsProfitTax { get; set; }
         
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public int PeriodInDays => (int)(EndDate - StartDate).TotalDays;
+        public int PeriodInDays { get; set; }
     }
 
     public interface IReportService
@@ -72,19 +75,26 @@ namespace SavingsDeposits.Services
         }
         public async Task<ReportData> GenerateReport(string userId, DateTime startDate, DateTime endDate)
         {
+            if (endDate <= startDate)
+            {
+                throw new ArgumentException("End date should be greater than start date");
+            }
+            
             DateRangeReport rangeReport = new DateRangeReport
             {
                 StartDate = startDate,
-                EndDate = endDate
+                EndDate = endDate,
+                PeriodInDays = (int)(endDate - startDate).TotalDays
+                
             };
 
-            var foundUser = await _context.Users.SingleOrDefaultAsync(x=> x.Id == userId);
+            var foundUser = await _context.Users.SingleOrDefaultAsync(x => x.Id == userId);
 
             rangeReport.Email = foundUser.Email;
             rangeReport.FullName = foundUser.FullName;
             rangeReport.UserName = foundUser.UserName;
             
-            var depositMap = await _context.SavingsDeposits.Where(x => x.Owner == userId).Select(x => new{x.Id,x.BankName,x.AccountNumber})
+            var depositMap = await _context.SavingsDeposits.Where(x => x.Owner == userId)
                 .ToDictionaryAsync(x=>x.Id);
 
             var userDeposits = depositMap.Keys;
@@ -98,8 +108,12 @@ namespace SavingsDeposits.Services
             
             rangeReport.DepositReports = result.Select(x=> new DepositReport
             {
-                AccountNumber = depositMap[x.Id].AccountNumber.ToString(),
+                AccountNumber = depositMap[x.Id].AccountNumber,
                 BankName = depositMap[x.Id].BankName,
+                InitialAmount = depositMap[x.Id].InitialAmount,
+                Interest = depositMap[x.Id].YearlyInterestPercentage,
+                ProfitTax = depositMap[x.Id].TaxPercentage,
+                
                 TotalProfitBeforeTax = x.TotalBeforTax,
                 TotalProfitAfterTax = x.TotalAfterTax,
                 TotalProfitTax = x.TotalTax,
