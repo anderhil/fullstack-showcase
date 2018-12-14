@@ -8,6 +8,7 @@ import {SavingsDeposit} from '../../models/savingsDeposit';
 import {Subscription} from 'rxjs';
 import {NGXLogger} from 'ngx-logger';
 import {logger} from 'codelyzer/util/logger';
+import {NotifyService} from '../../services/notify.service';
 
 @Component({templateUrl: 'home.component.html', styleUrls: ['home.component.css']})
 export class HomeComponent implements OnInit {
@@ -23,7 +24,8 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private savingsService: SavingsDepositService,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    private notifier: NotifyService
   ) {
     this.currentUserSubscription = this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
@@ -38,6 +40,8 @@ export class HomeComponent implements OnInit {
   private loadAllSavings() {
     this.savingsService.getAllSavings().pipe(first()).subscribe(deposits => {
       this.savingsDeposits = deposits;
+    }, error => {
+      this.notifier.error(error);
     });
   }
 

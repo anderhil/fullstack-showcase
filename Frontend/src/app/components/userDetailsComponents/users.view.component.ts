@@ -7,6 +7,7 @@ import {User} from '../../models/user';
 import {SavingsDeposit} from '../../models/savingsDeposit';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {UserService} from '../../services/user.service';
+import {NotifyService} from '../../services/notify.service';
 
 @Component({templateUrl: 'users.view.component.html', styleUrls: ['./user.edit.component.css']})
 export class UsersViewComponent implements OnInit {
@@ -18,7 +19,8 @@ export class UsersViewComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private notifier: NotifyService
   ) {
     this.currentUserSubscription = this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
@@ -38,7 +40,8 @@ export class UsersViewComponent implements OnInit {
     this.userService.delete(username).subscribe( data => {
           const index = this.users.findIndex(x => x.username === username);
           this.users.splice(index, 1);
-          }, error => {});
+          }, error => {this.notifier.error(error);
+    });
   }
 
   navigateTo(userName: string) {
@@ -48,6 +51,8 @@ export class UsersViewComponent implements OnInit {
   private loadAllUsers() {
     this.userService.getAll().pipe(first()).subscribe(users => {
       this.users = users;
+    }, error => {
+      this.notifier.error(error);
     });
   }
 

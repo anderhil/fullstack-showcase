@@ -14,6 +14,8 @@ import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
 import {UsersViewComponent} from './components/userDetailsComponents/users.view.component';
 import {UserEditComponent} from './components/userDetailsComponents/user.edit.component';
 import {ReportComponent} from './components/reportComponent/report.component';
+import {NotifyService} from './services/notify.service';
+import {NotificationComponent} from './components/notificationComponent/notification.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,8 @@ import {ReportComponent} from './components/reportComponent/report.component';
     SavingsEditorComponent,
     UsersViewComponent,
     UserEditComponent,
-    ReportComponent
+    ReportComponent,
+    NotificationComponent
   ],
   imports: [
     BrowserModule,

@@ -13,7 +13,6 @@ export class RegisterComponent implements OnInit {
   loading = false;
   submitted = false;
   errorMessage = '';
-  roles = ['user', 'manager', 'admin'];
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
@@ -32,7 +31,6 @@ export class RegisterComponent implements OnInit {
       fullName: ['', Validators.required],
       username: ['', Validators.required],
       password: ['', [Validators.required]],
-      role: ['', [Validators.required]],
       email: ['', [Validators.required]],
     });
   }
@@ -56,7 +54,8 @@ export class RegisterComponent implements OnInit {
     }
 
     this.loading = true;
-    this.userService.register(this.registerForm.value)
+    const user = this.registerForm.value;
+    this.userService.register(user)
       .pipe(first())
       .subscribe(
         data => {

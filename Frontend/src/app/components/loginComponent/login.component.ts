@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import {AuthService} from '../../services/auth.service';
+import {NotifyService} from '../../services/notify.service';
 
 
 @Component({templateUrl: 'login.component.html'})
@@ -17,6 +18,7 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
+    private notifier: NotifyService
   ) {
     if (this.authService.currentUserValue) {
       this.router.navigate(['/']);
@@ -50,6 +52,7 @@ export class LoginComponent implements OnInit {
         },
         error => {
           this.loading = false;
+          this.notifier.error(error);
         });
   }
 }

@@ -6,6 +6,8 @@ import {AuthService} from '../../services/auth.service';
 import {ReportingService} from '../../services/reporting.service';
 import {DateRangeReport} from '../../models/dateRangeReport';
 import {DepositReport} from '../../models/depositReport';
+import {NotifyService} from '../../services/notify.service';
+import {errorObject} from 'rxjs/internal-compatibility';
 
 
 @Component({templateUrl: 'report.component.html', styleUrls: ['report.component.css']})
@@ -26,7 +28,8 @@ export class ReportComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private reportingService: ReportingService
+    private reportingService: ReportingService,
+    private notifier: NotifyService
   ) {
   }
 
@@ -44,21 +47,21 @@ export class ReportComponent implements OnInit {
     this.endDate = this.formControl.endDate.value;
     this.reportingService.generateReport(this.startDate, this.endDate)
       .subscribe(data => {
-        // const obj: DateRangeReport = Object.setPrototypeOf(data, DateRangeReport.prototype);
-        // obj.depositReports = Object.setPrototypeOf(data.depositReports, DepositReport.prototype);
         this.dateRangeReport = data;
-    });
+    }, error => {
+        this.notifier.error(error);
+      });
   }
 
   get formControl() { return this.reportForm.controls; }
 
-  onSubmit() {
-    this.submitted = true;
-
-    if (this.reportForm.invalid) {
-      return;
-    }
-
-    this.loading = true;
-  }
+  // onSubmit() {
+  //   this.submitted = true;
+  //
+  //   if (this.reportForm.invalid) {
+  //     return;
+  //   }
+  //
+  //   this.loading = true;
+  // }
 }

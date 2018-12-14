@@ -6,6 +6,7 @@ import {SavingsDepositService} from '../../services/savingsDeposits.service';
 import {User} from '../../models/user';
 import {SavingsDeposit} from '../../models/savingsDeposit';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
+import {NotifyService} from '../../services/notify.service';
 
 @Component({templateUrl: 'savings.view.component.html', styleUrls: ['./savings.view.component.css']})
 export class SavingsViewComponent implements OnInit {
@@ -27,7 +28,8 @@ export class SavingsViewComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
-    private savingsService: SavingsDepositService
+    private savingsService: SavingsDepositService,
+    private notifier: NotifyService
   ) {
     this.currentUserSubscription = this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
@@ -98,7 +100,7 @@ export class SavingsViewComponent implements OnInit {
           this.filter();
       }
     , error => {
-
+        this.notifier.error(error);
     });
   }
 
@@ -116,6 +118,8 @@ export class SavingsViewComponent implements OnInit {
       this.savingsDeposits = deposits;
       this.cachedSavingsDeposits = deposits;
       this.banksDistinct = new Set(deposits.map(x => x.bankName));
+    }, error => {
+        this.notifier.error(error);
     });
   }
 

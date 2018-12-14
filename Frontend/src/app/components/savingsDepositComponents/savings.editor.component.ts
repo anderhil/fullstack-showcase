@@ -9,6 +9,7 @@ import {Observable, Subscription} from 'rxjs';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Location } from '@angular/common';
 import {el} from '@angular/platform-browser/testing/src/browser_util';
+import {NotifyService} from '../../services/notify.service';
 
 @Component({templateUrl: 'savings.editor.component.html'})
 export class SavingsEditorComponent implements OnInit {
@@ -30,7 +31,8 @@ export class SavingsEditorComponent implements OnInit {
     private savingsService: SavingsDepositService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private location: Location
+    private location: Location,
+    private notifier: NotifyService
 ) {
     this.currentUserSubscription = this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
@@ -119,6 +121,7 @@ export class SavingsEditorComponent implements OnInit {
           },
           error => {
           this.loading = false;
+          this.notifier.error(error);
         });
 
     } else {
@@ -135,7 +138,8 @@ export class SavingsEditorComponent implements OnInit {
       createObservable.pipe(first())
         .subscribe(
           next => { this.goBack(); },
-          error => {this.loading = false; });
+          error => {this.loading = false; this.notifier.error(error);
+          });
     }
   }
 

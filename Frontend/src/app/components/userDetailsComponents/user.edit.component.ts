@@ -7,6 +7,7 @@ import {UserService} from '../../services/user.service';
 import {el} from '@angular/platform-browser/testing/src/browser_util';
 import { Location } from '@angular/common';
 import {User} from '../../models/user';
+import {NotifyService} from '../../services/notify.service';
 
 @Component({templateUrl: 'user.edit.component.html', styleUrls: ['./user.edit.component.css']})
 export class UserEditComponent implements OnInit {
@@ -23,7 +24,8 @@ export class UserEditComponent implements OnInit {
     private route: ActivatedRoute,
     private authService: AuthService,
     private userService: UserService,
-    private location: Location
+    private location: Location,
+    private notifier: NotifyService
   ) {}
 
   ngOnInit() {
@@ -75,6 +77,7 @@ export class UserEditComponent implements OnInit {
           this.loading = false;
           const message = error.error.error;
           this.errorMessage = message;
+          this.notifier.error(error);
         });
   }
 }

@@ -30,15 +30,15 @@
       <div *ngIf="formControl.password.errors.passwordError">{{formControl.password.errors.passwordError}}</div>
     </div>
   </div>
-  <div class="form-group">
-    <label for="role">User role</label>
-    <select formControlName="role" class="form-control" required>
-      <option *ngFor="let role of roles" [value]="role">{{role}}</option>
-    </select>
-    <div *ngIf="submitted && formControl.role.errors" class="invalid-feedback">
-      <div *ngIf="formControl.role.errors.required">Role required</div>
-    </div>
-  </div>
+  <!--<div class="form-group">-->
+    <!--<label for="role">User role</label>-->
+    <!--<select formControlName="role" class="form-control" required>-->
+      <!--<option *ngFor="let role of roles" [value]="role">{{role}}</option>-->
+    <!--</select>-->
+    <!--<div *ngIf="submitted && formControl.role.errors" class="invalid-feedback">-->
+      <!--<div *ngIf="formControl.role.errors.required">Role required</div>-->
+    <!--</div>-->
+  <!--</div>-->
   <div class="form-group">
     <button [disabled]="loading" class="btn btn-primary">Register</button>
     <button (click)="goBack()" class="btn btn-link">Cancel</button>
