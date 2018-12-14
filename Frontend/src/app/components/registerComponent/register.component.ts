@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
 import {AuthService} from '../../services/auth.service';
 import {UserService} from '../../services/user.service';
@@ -21,8 +21,9 @@ export class RegisterComponent implements OnInit {
     private location: Location
   ) {
     if (this.authService.currentUserValue) {
-      // go home
-      this.router.navigate(['/']);
+      if (this.authService.currentUserValue.role.toLowerCase() !== 'admin') {
+        this.router.navigate(['/']);
+      }
     }
   }
 

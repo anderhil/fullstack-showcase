@@ -74,6 +74,11 @@ export class SavingsEditorComponent implements OnInit {
         serverRequest.subscribe(x => {
             this.savingsDeposit = x;
             this.savingEditorForm.patchValue(this.savingsDeposit);
+            this.formControl.initialAmount.disable();
+            this.formControl.bankName.disable();
+            this.formControl.accountNumber.disable();
+            this.formControl.taxPercentage.disable();
+            this.formControl.yearlyInterestPercentage.disable();
           });
 
       } else {
@@ -109,7 +114,7 @@ export class SavingsEditorComponent implements OnInit {
     this.loading = true;
 
     const id = this.savingsDeposit.id;
-    this.savingsDeposit = this.savingEditorForm.value;
+    this.savingsDeposit = this.savingEditorForm.getRawValue();
     this.savingsDeposit.id = id;
 
     // editing record
